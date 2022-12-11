@@ -1,0 +1,677 @@
+mysql> create database trendytech;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use trendytech;
+Database changed
+
+CREATE TABLE students(
+    student_id INT AUTO_INCREMENT,
+    student_fname VARCHAR(30) NOT NULL,
+    student_lname VARCHAR(30) NOT NULL,
+    student_mname VARCHAR(30),
+    student_email VARCHAR(30) NOT NULL,
+    student_phone VARCHAR(15) NOT NULL,
+    student_alternate_phone VARCHAR(15),
+    enrollment_date TIMESTAMP NOT NULL,
+    years_of_exp INT NOT NULL,
+    student_company VARCHAR(30),
+    batch_date VARCHAR(30) NOT NULL,
+    source_of_joining VARCHAR(30) NOT NULL,
+    location VARCHAR(30) NOT NULL
+);
+
+ERROR 1075 (42000): Incorrect table definition; there can be only one auto column and it must be defined as a key(unique/primary)
+
+
+CREATE TABLE students(
+    student_id INT AUTO_INCREMENT,
+    student_fname VARCHAR(30) NOT NULL,
+    student_lname VARCHAR(30) NOT NULL,
+    student_mname VARCHAR(30),
+    student_email VARCHAR(30) NOT NULL,
+    student_phone VARCHAR(15) NOT NULL,
+    student_alternate_phone VARCHAR(15),
+    enrollment_date TIMESTAMP NOT NULL,
+    years_of_exp INT NOT NULL,
+    student_company VARCHAR(30),
+    batch_date VARCHAR(30) NOT NULL,
+    source_of_joining VARCHAR(30) NOT NULL,
+    location VARCHAR(30) NOT NULL,
+    PRIMARY KEY(student_id),
+    UNIQUE KEY(student_email)
+);
+
+
+
+mysql> desc students;
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+| Field                   | Type        | Null | Key | Default           | Extra                       |
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+| student_id              | int(11)     | NO   | PRI | NULL              | auto_increment              |
+| student_fname           | varchar(30) | NO   |     | NULL              |                             |
+| student_lname           | varchar(30) | NO   |     | NULL              |                             |
+| student_mname           | varchar(30) | YES  |     | NULL              |                             |
+| student_email           | varchar(30) | NO   | UNI | NULL              |                             |
+| student_phone           | varchar(15) | NO   |     | NULL              |                             |
+| student_alternate_phone | varchar(15) | YES  |     | NULL              |                             |
+| enrollment_date         | timestamp   | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+| years_of_exp            | int(11)     | NO   |     | NULL              |                             |
+| student_company         | varchar(30) | YES  |     | NULL              |                             |
+| batch_date              | varchar(30) | NO   |     | NULL              |                             |
+| source_of_joining       | varchar(30) | NO   |     | NULL              |                             |
+| location                | varchar(30) | NO   |     | NULL              |                             |
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+13 rows in set (0.06 sec)
+
+---note---
+Timestamp will enter current timestamp if we will not enter anything.
+
+---Seed Data---
+
+insert into students (student_fname, student_lname, student_email, student_phone, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('rohit','sharma','rohit@gmail.com','9191919191',6,'walmart','5-02-2021',
+'linknedin','bangalore');
+
+insert into students (student_fname, student_lname, student_email, student_phone, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('virat','kohli','virat@gmail.com','9292929292',3,'flipkart','5-02-2021',
+'linknedin','hyderabad');
+
+insert into students (student_fname, student_lname, student_email, student_phone, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('shikhar','dhawan','shikhar@gmail.com','9393939393',12,'google','12-02-2021',
+'linknedin','bangalore');
+
+insert into students (student_fname, student_lname, student_email, student_phone, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('rahul','dravid','rahul@gmail.com','9494949494',8,'walmart','19-02-2021',
+'quora','chennai');
+
+insert into students (student_fname, student_lname, student_email, student_phone, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('kapil','dev','kapil@gmail.com','9291292292',15,'microsoft','5-02-2021',
+'friend','pune'),
+('brain','lara','brain@gmail.com','929127292',18,'tcs','5-02-2021',
+'youtube','pune'),
+('carl','hooper','carl@gmail.com','929127392',20,'wipro','19-02-2021',
+'youtube','pune'),
+('saurabh','ganguly','saurabh@gmail.com','929127492',14,'wipro','19-02-2021',
+'google','chennai');
+
+
+
+mysql> select*from students;
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+--------------+----------
+-------+------------+-------------------+-----------+
+| student_id | student_fname | student_lname | student_mname | student_email     | student_phone | student_alternate_phone | enrollment_date     | years_of_exp | student_c
+ompany | batch_date | source_of_joining | location  |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+--------------+----------
+-------+------------+-------------------+-----------+
+|          1 | virat         | kohli         | NULL          | virat@gmail.com   | 9292929292    | NULL                    | 2022-09-12 11:24:42 |            3 | flipkart
+       | 5-02-2021  | linknedin         | hyderabad |
+|          2 | shikhar       | dhawan        | NULL          | shikhar@gmail.com | 9393939393    | NULL                    | 2022-09-12 11:24:42 |           12 | google
+     | 12-02-2021 | linknedin         | bangalore |
+|          3 | rahul         | dravid        | NULL          | rahul@gmail.com   | 9494949494    | NULL                    | 2022-09-12 11:24:45 |            8 | walmart
+      | 19-02-2021 | quora             | chennai   |
+|          4 | kapil         | dev           | NULL          | kapil@gmail.com   | 9291292292    | NULL                    | 2022-09-12 11:24:56 |           15 | microsoft
+       | 5-02-2021  | friend            | pune      |
+|          5 | brain         | lara          | NULL          | brain@gmail.com   | 929127292     | NULL                    | 2022-09-12 11:24:56 |           18 | tcs
+ 5-02-2021  | youtube           | pune      |
+|          6 | carl          | hooper        | NULL          | carl@gmail.com    | 929127392     | NULL                    | 2022-09-12 11:24:56 |           20 | wipro
+   | 19-02-2021 | youtube           | pune      |
+|          7 | saurabh       | ganguly       | NULL          | saurabh@gmail.com | 929127492     | NULL                    | 2022-09-12 11:24:56 |           14 | wipro
+   | 19-02-2021 | google            | chennai   |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+--------------+----------
+-------+------------+-------------------+-----------+
+
+
+SELECT student_id,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students;
+
++------------+---------------------+---------------+-------------------+--------------+-----------------+------------+-------------------+-----------+
+| student_id | enrollment_date     | student_fname | student_email     | years_of_exp | student_company | batch_date | source_of_joining | location  |
++------------+---------------------+---------------+-------------------+--------------+-----------------+------------+-------------------+-----------+
+|          1 | 2022-09-12 11:24:42 | virat         | virat@gmail.com   |            3 | flipkart        | 5-02-2021  | linknedin         | hyderabad |
+|          2 | 2022-09-12 11:24:42 | shikhar       | shikhar@gmail.com |           12 | google          | 12-02-2021 | linknedin         | bangalore |
+|          3 | 2022-09-12 11:24:45 | rahul         | rahul@gmail.com   |            8 | walmart         | 19-02-2021 | quora             | chennai   |
+|          4 | 2022-09-12 11:24:56 | kapil         | kapil@gmail.com   |           15 | microsoft       | 5-02-2021  | friend            | pune      |
+|          5 | 2022-09-12 11:24:56 | brain         | brain@gmail.com   |           18 | tcs             | 5-02-2021  | youtube           | pune      |
+|          6 | 2022-09-12 11:24:56 | carl          | carl@gmail.com    |           20 | wipro           | 19-02-2021 | youtube           | pune      |
+|          7 | 2022-09-12 11:24:56 | saurabh       | saurabh@gmail.com |           14 | wipro           | 19-02-2021 | google            | chennai   |
++------------+---------------------+---------------+-------------------+--------------+-----------------+------------+-------------------+-----------+
+7 rows in set (0.00 sec)
+
+
+---Suppose in future we have some courses also for students---
+
+CREATE TABLE courses(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months INT NOT NULL,
+    course_fee INT NOT NULL,
+    PRIMARY KEY(course_id)
+);
+
+---Seed Data---
+
+insert into courses values (1,'big data',6,50000);
+insert into courses values (2,'web development',3,20000);
+insert into courses values (3,'data science',6,40000);
+insert into courses values (4,'dev ops',1,10000);
+
+
+
+drop table students;
+---we shold add selected courses in our table---
+
+CREATE TABLE students(
+    student_id INT AUTO_INCREMENT,
+    student_fname VARCHAR(30) NOT NULL,
+    student_lname VARCHAR(30) NOT NULL,
+    student_mname VARCHAR(30),
+    student_email VARCHAR(30) NOT NULL,
+    student_phone VARCHAR(15) NOT NULL,
+    student_alternate_phone VARCHAR(15),
+    enrollment_date TIMESTAMP NOT NULL,
+    selected_course INT NOT NULL DEFAULT 1,
+    years_of_exp INT NOT NULL,
+    student_company VARCHAR(30),
+    batch_date VARCHAR(30) NOT NULL,
+    source_of_joining VARCHAR(30) NOT NULL,
+    location VARCHAR(30) NOT NULL,
+    PRIMARY KEY(student_id),
+    UNIQUE KEY(student_email)
+);
+
+
+---Seed Data---
+
+insert into students (student_fname, student_lname, student_email, student_phone,selected_course,years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('rohit','sharma','rohit@gmail.com','9191919191',2,'walmart','5-02-2021',
+'linknedin','bangalore');
+
+insert into students (student_fname, student_lname, student_email, student_phone,selected_course, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('virat','kohli','virat@gmail.com','9292929292',3,'flipkart','5-02-2021',
+'linknedin','hyderabad');
+
+insert into students (student_fname, student_lname, student_email, student_phone, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('shikhar','dhawan','shikhar@gmail.com','9393939393',12,'google','12-02-2021',
+'linknedin','bangalore');
+
+insert into students (student_fname, student_lname, student_email, student_phone,selected_course, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('rahul','dravid','rahul@gmail.com','9494949494',3,8,'walmart','19-02-2021',
+'quora','chennai');
+
+insert into students (student_fname, student_lname, student_email, student_phone, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('kapil','dev','kapil@gmail.com','9291292292',15,'microsoft','5-02-2021',
+'friend','pune'),
+('brain','lara','brain@gmail.com','929127292',18,'tcs','5-02-2021',
+'youtube','pune'),
+('carl','hooper','carl@gmail.com','929127392',20,'wipro','19-02-2021',
+'youtube','pune'),
+('saurabh','ganguly','saurabh@gmail.com','929127492',14,'wipro','19-02-2021',
+'google','chennai');
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                     FOREIGN KEY                  ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+We are offering 4 courses but if someone tries to enter course id 5,he can enter it which should not be accepted.
+How can someone join a course which is not avaiable, but system is taking it,and this is where foreign key comes into use.
+
+
+insert into students (student_fname, student_lname, student_email, student_phone,selected_course, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('jasprit','boomrah','boomboom@gmail.com','9494909404',5,12,'intuit','19-02-2021',
+'linkedin','delhi');
+
+we are wrong somewhere..
+
+mysql> drop table students;
+Query OK, 0 rows affected (0.12 sec)
+
+CREATE TABLE courses(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months INT NOT NULL,
+    course_fee INT NOT NULL,
+    PRIMARY KEY(course_id)
+);
+
+
+CREATE TABLE students(
+    student_id INT AUTO_INCREMENT,
+    student_fname VARCHAR(30) NOT NULL,
+    student_lname VARCHAR(30) NOT NULL,
+    student_mname VARCHAR(30),
+    student_email VARCHAR(30) NOT NULL,
+    student_phone VARCHAR(15) NOT NULL,
+    student_alternate_phone VARCHAR(15),
+    enrollment_date TIMESTAMP NOT NULL,
+    selected_course INT NOT NULL DEFAULT 1,
+    years_of_exp INT NOT NULL,
+    student_company VARCHAR(30),
+    batch_date VARCHAR(30) NOT NULL,
+    source_of_joining VARCHAR(30) NOT NULL,
+    location VARCHAR(30) NOT NULL,
+    PRIMARY KEY(student_id),
+    UNIQUE KEY(student_email),
+    FOREIGN KEY(selected_course) REFERENCES courses(course_id)
+);
+
+You cannot add foreign key on column which is not  a primary key.
+
+---seclected course is dependent upon courses table courses_id column---
+---parent table is courses table as students table has dependency on that and child table is student table as it is dependent---
+
+mysql> describe students;
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+| Field                   | Type        | Null | Key | Default           | Extra                       |
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+| student_id              | int(11)     | NO   | PRI | NULL              | auto_increment              |
+| student_fname           | varchar(30) | NO   |     | NULL              |                             |
+| student_lname           | varchar(30) | NO   |     | NULL              |                             |
+| student_mname           | varchar(30) | YES  |     | NULL              |                             |
+| student_email           | varchar(30) | NO   | UNI | NULL              |                             |
+| student_phone           | varchar(15) | NO   |     | NULL              |                             |
+| student_alternate_phone | varchar(15) | YES  |     | NULL              |                             |
+| enrollment_date         | timestamp   | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+| selected_course         | int(11)     | NO   | MUL | 1                 |                             |
+| years_of_exp            | int(11)     | NO   |     | NULL              |                             |
+| student_company         | varchar(30) | YES  |     | NULL              |                             |
+| batch_date              | varchar(30) | NO   |     | NULL              |                             |
+| source_of_joining       | varchar(30) | NO   |     | NULL              |                             |
+| location                | varchar(30) | NO   |     | NULL              |                             |
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+14 rows in set (0.01 sec)
+
+
+mysql> insert into students (student_fname, student_lname, student_email, student_phone,selected_course, years_of_exp, student_company,
+    -> batch_date, source_of_joining, location) values ('jasprit','boomrah','boomboom@gmail.com','9494909404',5,12,'intuit','19-02-2021',
+    -> 'linkedin','delhi');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`trendytech`.`students`, CONSTRAINT `students_ibfk_1` FOREIGN KEY (`selected_course`) REF
+ERENCES `courses` (`course_id`))
+
+
+What if someone wants to discontinue couse id 2(web development)?
+DELETE from courses where course_id=2;
+
+Record will be invalidated and it is also a voilation of foreign key!!!
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`trendytech`.`students`, CONSTRAINT `students_ibfk_1` FOREIGN KEY (`sele
+cted_course`) REFERENCES `courses` (`course_id`))
+
+
+Bookish Defination:
+The foreign key constraint is used to prevent actions that would destroy links between 2 tables.
+A foreign key is a field in one table that refers to the primary key in another table.
+
+selected_course is a foreign key in students table which refers to course_id(primary key) in course table.
+The table with foreign key is called the child table,the table with primary key is called the parent or referenced table.
+
+
+NOT NULL
+UNIQUE KEY
+PRIMARY KEY
+FOREIGN KEY 
+CHECK CONSTRAINT(not supported in mysql)
+
+Constraint are used to limit type of data that can go into a table.
+This ensures the accuracy and reliability of data is maintained.
+If there is any voilation then action is aborted.
+
+
+
+=================================================================================================================================
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      DISTINCT                    ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Lets say we have a problem statement that I want to check from which all locations the students have joining the course.
+
+select location from students;
++-----------+
+| location  |
++-----------+
+| bangalore |
+| bangalore |
+| chennai   |
+| pune      |
+| pune      |
+| pune      |
+| chennai   |
++-----------+
+7 rows in set (0.00 sec)
+
+You can see that this is showing redundant data and I dont want that.
+
+select distinct location from students;
++-----------+
+| location  |
++-----------+
+| bangalore |
+| chennai   |
+| pune      |
++-----------+
+3 rows in set (0.00 sec)
+
+
+select distinct student_company from students;
+---this might have a null also as it is not a mandatory column---
+
++-----------------+
+| student_company |
++-----------------+
+| walmart         |
+| google          |
+| microsoft       |
+| tcs             |
+| wipro           |
++-----------------+
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      ORDER BY                    ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+select student_fname from students;
+
++---------------+
+| student_fname |
++---------------+
+| rohit         |
+| shikhar       |
+| rahul         |
+| kapil         |
+| brain         |
+| carl          |
+| saurabh       |
++---------------+
+7 rows in set (0.00 sec)
+
+
+mysql> select student_id, student_fname, years_of_exp from students ORDER BY years_of_exp ;
++------------+---------------+--------------+
+| student_id | student_fname | years_of_exp |
++------------+---------------+--------------+
+|          2 | rohit         |            6 |
+|          4 | rahul         |            8 |
+|          3 | shikhar       |           12 |
+|          8 | saurabh       |           14 |
+|          5 | kapil         |           15 |
+|          6 | brain         |           18 |
+|          7 | carl          |           20 |
++------------+---------------+--------------+
+
+This order by need not to be the part of select.
+SELECT student_id FROM students ORDER BY years_of_exp;
+
+If you want year of experience at top you can use desc(descending).
+
+select student_id, student_fname, years_of_exp from students ORDER BY years_of_exp desc;
++------------+---------------+--------------+
+| student_id | student_fname | years_of_exp |
++------------+---------------+--------------+
+|          7 | carl          |           20 |
+|          6 | brain         |           18 |
+|          5 | kapil         |           15 |
+|          8 | saurabh       |           14 |
+|          3 | shikhar       |           12 |
+|          4 | rahul         |            8 |
+|          2 | rohit         |            6 |
++------------+---------------+--------------+
+
+
+---You can also sort it on basis of column number---
+select student_id, student_fname, years_of_exp from students ORDER BY 3 desc;
+
+
+select student_id, student_fname, years_of_exp from students ORDER BY years_of_exp,student_fname desc;
+
+--First this query will order by years of exp(people with lowest years of exp will come at top) and then 
+---it will do a second level sorting based on first name.---
+
+--3 (now it will sort fname in these common values)
+--3
+--3
+--4
+--5
+--8
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      LIMIT                       ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+If I want just 3 records.
+---there is no relevent data,no ordering na, specific data---
+
+SELECT*from students limit 3;
+
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+-----------------+--------------+--
+---------------+------------+-------------------+-----------+
+| student_id | student_fname | student_lname | student_mname | student_email     | student_phone | student_alternate_phone | enrollment_date     | selected_course | years_of_exp | s
+tudent_company | batch_date | source_of_joining | location  |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+-----------------+--------------+--
+---------------+------------+-------------------+-----------+
+|          2 | rohit         | sharma        | NULL          | rohit@gmail.com   | 9191919191    | NULL                    | 2022-09-12 11:59:51 |               2 |            6 | w
+almart         | 5-02-2021  | linknedin         | bangalore |
+|          3 | shikhar       | dhawan        | NULL          | shikhar@gmail.com | 9393939393    | NULL                    | 2022-09-12 11:59:51 |               1 |           12 | g
+oogle          | 12-02-2021 | linknedin         | bangalore |
+|          4 | rahul         | dravid        | NULL          | rahul@gmail.com   | 9494949494    | NULL                    | 2022-09-12 11:59:51 |               3 |            8 | w
+almart         | 19-02-2021 | quora             | chennai   |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+-----------------+--------------+--
+---------------+------------+-------------------+-----------+
+
+Limit must be used with order by to get the proper results.
+---Get 3 candidates with least experience---
+
+SELECT student_id, student_fname, years_of_exp FROM students ORDER BY years_of_exp LIMIT 3;
+
++------------+---------------+--------------+
+| student_id | student_fname | years_of_exp |
++------------+---------------+--------------+
+|          2 | rohit         |            6 |
+|          4 | rahul         |            8 |
+|          3 | shikhar       |           12 |
++------------+---------------+--------------+
+
+---For the last 5 people who have joined the course i want to see source from where they have joined---
+
+SELECT source_of_joining FROM students ORDER BY enrollment_date DESC LIMIT 5; 
+---desc because we want last 5 no---
++-------------------+
+| source_of_joining |
++-------------------+
+| google            |
+| friend            |
+| youtube           |
+| youtube           |
+| linknedin         |
++-------------------+
+5 rows in set (0.00 sec)
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--we will discuss this later---
+
+SELECT DISTINCT source_of_joining FROM students ORDER BY enrollment_date DESC LIMIT 5; 
+ERROR 3065 (HY000): Expression #1 of ORDER BY clause is not in SELECT list, references column 'trendytech.students.enrollment_date' which is not in SELECT list; this is incompatible
+with DISTINCT
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+---To get person who has joined very last---
+
+SELECT student_id, student_fname, years_of_exp FROM students ORDER BY enrollment_date DESC LIMIT 1;
+
++------------+---------------+--------------+
+| student_id | student_fname | years_of_exp |
++------------+---------------+--------------+
+|          8 | saurabh       |           14 |
++------------+---------------+--------------+
+1 row in set (0.00 sec)
+
+
+
+---This 0 says we want to start form 0 records onwards we want 3 records---
+SELECT*FROM students ORDER BY enrollment_date LIMIT 0,3;
+
+--It will give you first 3 candidates---
+
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+-----------------+--------------+--
+---------------+------------+-------------------+-----------+
+| student_id | student_fname | student_lname | student_mname | student_email     | student_phone | student_alternate_phone | enrollment_date     | selected_course | years_of_exp | s
+tudent_company | batch_date | source_of_joining | location  |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+-----------------+--------------+--
+---------------+------------+-------------------+-----------+
+|          2 | rohit         | sharma        | NULL          | rohit@gmail.com   | 9191919191    | NULL                    | 2022-09-12 11:59:51 |               2 |            6 | w
+almart         | 5-02-2021  | linknedin         | bangalore |
+|          3 | shikhar       | dhawan        | NULL          | shikhar@gmail.com | 9393939393    | NULL                    | 2022-09-12 11:59:51 |               1 |           12 | g
+oogle          | 12-02-2021 | linknedin         | bangalore |
+|          4 | rahul         | dravid        | NULL          | rahul@gmail.com   | 9494949494    | NULL                    | 2022-09-12 11:59:51 |               3 |            8 | w
+almart         | 19-02-2021 | quora             | chennai   |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+-----------------+--------------+--
+---------------+------------+-------------------+-----------+
+3 rows in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                        LIKE                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Like does the same work as where clause.(where does the exact match but what if you want to do a fuzzy match)
+
+---Give me all students whose firstname has ra----
+
+select student_id, student_fname, years_of_exp from students WHERE student_fname LIKE '%ra%';
+---% means it can match 0 or any number of characters---
++------------+---------------+--------------+
+| student_id | student_fname | years_of_exp |
++------------+---------------+--------------+
+|          4 | rahul         |            8 |
+|          6 | brain         |           18 |
+|          8 | saurabh       |           14 |
++------------+---------------+--------------+
+
+---% is called wildcard character---
+
+
+---Give me all students whose firstname starts with ra----
+select student_id, student_fname, years_of_exp from students WHERE student_fname LIKE 'ra%';
+
++------------+---------------+--------------+
+| student_id | student_fname | years_of_exp |
++------------+---------------+--------------+
+|          4 | rahul         |            8 |
++------------+---------------+--------------+
+
+---Give me all students whose firstname end with ra----
+select student_id, student_fname, years_of_exp from students WHERE student_fname LIKE '%ra';
+
+
+---Get all names who have 5 characters in their first name---
+
+---Underscore is another wildcard character which says exactly 1 character and it can be anything--- 
+select student_id, student_fname, years_of_exp from students WHERE student_fname LIKE '_____';
+
++------------+---------------+--------------+
+| student_id | student_fname | years_of_exp |
++------------+---------------+--------------+
+|          2 | rohit         |            6 |
+|          4 | rahul         |            8 |
+|          5 | kapil         |           15 |
+|          6 | brain         |           18 |
++------------+---------------+--------------+
+
+
+Lets say in extreme scenerio your data has a % character.
+
+Example:ROHI%T
+Such things you can avoid using backslash character ROHI\%T.
+You can escape like this.
+
+---Give me all students whose firstname end with %ra----
+SELECT student_id, student_fname, years_of_exp from students WHERE student_fname LIKE '%\%ra';
+
+=================================================================================================================================
+
+
+Now we will see why this query is failing.
+
+SELECT DISTINCT source_of_joining FROM students ORDER BY enrollment_date DESC LIMIT 5; 
+ERROR 3065 (HY000): Expression #1 of ORDER BY clause is not in SELECT list, references column 'trendytech.students.enrollment_date' 
+which is not in SELECT list; this is incompatible
+with DISTINCT
+
+DISTINCT & ORDER BY
+
+SELECT source_of_joining FROM students;
+order of execution: 
+1:FROM (Loading to table)
+
+2:SELECT(Projecting source_of_joining)
+
+
+SELECT source_of_joining FROM students ORDER BY enrollment_date;
+
+order of execution:
+1:FROM
+select*from students;
+
+
+---System will keep enrollment_date in 2 process because it can perform order by---
+
+2:SELECT(Projecting source_of_joining,enrollment_date)
+select source_of_joining,enrollment_date from students;
+
+3:ORDER BY(based on enrollment_date it will order by)
+select source_of_joining from students order by enrollment_date.
+
+
+---So this query will work---
+
+---Why is this not working---
+SELECT DISTINCT source_of_joining FROM students ORDER BY enrollment_date DESC LIMIT 5;
+
+
+order of execution:
+1:FROM(Loading Table)
+select*from students;
+
+
+---System will keep enrollment_date in 2 process because it can perform order by---
+
+2:SELECT(Projecting source_of_joining,enrollment_date)
+select source_of_joining,enrollment_date from students;
+
+
+--Distinct will happen on both source_of_joining and enrollment_date which is logically not giving op we want---
+3:DISTINCT
+Select distinct source_of_joining from students; (this will work but below query is fired)
+
++-------------------+
+| source_of_joining |
++-------------------+
+| linknedin         |
+| quora             |
+| friend            |
+| youtube           |
+| google            |
++-------------------+
+5 rows in set (0.10 sec)
+
+Select distinct source_of_joining,enrollment_date from students;
+
++-------------------+---------------------+
+| source_of_joining | enrollment_date     |
++-------------------+---------------------+
+| linknedin         | 2022-09-12 11:59:51 |
+| google            | 2022-09-12 11:59:52 |
+| quora             | 2022-09-12 11:59:51 |
+| friend            | 2022-09-12 11:59:52 |
+| youtube           | 2022-09-12 11:59:52 |
+| google            | 2022-09-12 11:59:52 |
++-------------------+---------------------+
+
+see we are getting diffrent column no.(logically we are gone wrong so rather than giving wrong ans,system throws error).
+
+4:ORDER BY(based on enrollment_date it will order by)
+select source_of_joining from students order by enrollment_date

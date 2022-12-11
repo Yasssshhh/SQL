@@ -1,0 +1,473 @@
+Aggregate functions: (Clubbing few things and getting the output)
+Count number of rows in a table.(input is all the lines and output is 1 line).
+
+SELECT COUNT(*) FROM students;
+
++----------+
+| COUNT(*) |
++----------+
+|        7 |
++----------+
+1 row in set (0.00 sec)
+
+From how many diffrent companies people are joining my course.
+
+SELECT count(student_company) from students;
+
++------------------------+
+| count(student_company) |
++------------------------+
+|                      7 |
++------------------------+
+1 row in set (0.00 sec)
+
+SELECT count(DISTINCT student_company) from students;
++---------------------------------+
+| count(DISTINCT student_company) |
++---------------------------------+
+|                               5 |
++---------------------------------+
+1 row in set (0.04 sec)
+
+
+SELECT count(DISTINCT student_company) AS num_companies from students;
++---------------+
+| num_companies |
++---------------+
+|             5 |
++---------------+
+1 row in set (0.00 sec)
+
+
+SELECT count(DISTINCT source_of_joining) from students;
+
++-----------------------------------+
+| count(DISTINCT source_of_joining) |
++-----------------------------------+
+|                                 5 |
++-----------------------------------+
+1 row in set (0.00 sec)
+
+
+Number of students who have registered for feb batch.
+
+SELECT batch_date from students;
++------------+
+| batch_date |
++------------+
+| 5-02-2021  |
+| 12-02-2021 |
+| 19-02-2021 |
+| 5-02-2021  |
+| 5-02-2021  |
+| 19-02-2021 |
+| 19-02-2021 |
++------------+
+7 rows in set (0.00 sec)
+
+
+SELECT COUNT(*) FROM students where batch_date like '%-02-%';
++----------+
+| COUNT(*) |
++----------+
+|        7 |
++----------+
+1 row in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                    GROUP BY                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Used to group some data based on some logic.
+
+Need of group by?
+TO do something later,like aggregate functions. 
+
+How to write query for count of  people who joined my course through linkedin,google,quora.
+
+linkedin-5
+google-2
+quora-1
+
+SELECT source_of_joining, count(*) from students GROUP BY source_of_joining;
++-------------------+----------+
+| source_of_joining | count(*) |
++-------------------+----------+
+| friend            |        1 |
+| google            |        1 |
+| linknedin         |        2 |
+| quora             |        1 |
+| youtube           |        2 |
++-------------------+----------+
+5 rows in set (0.00 sec)
+
+
+SELECT source_of_joining, count(*) from students (error)
+ERROR 1140 (42000): In aggregated query without GROUP BY, expression #1 of SELECT list contains nonaggregated column 'trendytech.students.source_of_joining'; this is inc
+ompatible with sql_mode=only_full_group_by
+
+
+---note--- 
+If you are having something as your grouping column, that should always be present in your select;
+
+SELECT location,count(*) FROM students GROUP BY location;
+
++-----------+----------+
+| location  | count(*) |
++-----------+----------+
+| bangalore |        2 |
+| chennai   |        2 |
+| pune      |        3 |
++-----------+----------+
+3 rows in set (0.00 sec)
+
+---this will fail---
+SELECT location,count(*) FROM students GROUP BY source_of_joining;
+
+Now I want to GROUP on basis of location and source_of_joining.
+
+
+SELECT location,source_of_joining,count(*) FROM students GROUP BY location,source_of_joining;
++-----------+-------------------+----------+
+| location  | source_of_joining | count(*) |
++-----------+-------------------+----------+
+| bangalore | linknedin         |        2 |
+| chennai   | google            |        1 |
+| chennai   | quora             |        1 |
+| pune      | friend            |        1 |
+| pune      | youtube           |        2 |
++-----------+-------------------+----------+
+5 rows in set (0.00 sec)
+
+
+Now I want to find for each course how many people have joined.
+
+mysql> SELECT selected_course,count(*) FROM students GROUP BY selected_course;
++-----------------+----------+
+| selected_course | count(*) |
++-----------------+----------+
+|               1 |        5 |
+|               2 |        1 |
+|               3 |        1 |
++-----------------+----------+
+3 rows in set (0.00 sec)
+
+
+Now I want to know on which date how many number of courses of diffrent course_id are sold.
+
+mysql> select batch_date,selected_course from students;
++------------+-----------------+
+| batch_date | selected_course |
++------------+-----------------+
+| 5-02-2021  |               2 |
+| 12-02-2021 |               1 |
+| 19-02-2021 |               3 |
+| 5-02-2021  |               1 |
+| 5-02-2021  |               1 |
+| 19-02-2021 |               1 |
+| 19-02-2021 |               1 |
++------------+-----------------+
+7 rows in set (0.00 sec)
+
+
+
+mysql> select batch_date,selected_course,count(*) from students GROUP BY batch_date,selected_course;
+
++------------+-----------------+----------+
+| batch_date | selected_course | count(*) |
++------------+-----------------+----------+
+| 12-02-2021 |               1 |        1 |
+| 19-02-2021 |               1 |        2 |
+| 19-02-2021 |               3 |        1 |
+| 5-02-2021  |               1 |        2 |
+| 5-02-2021  |               2 |        1 |
++------------+-----------------+----------+
+5 rows in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                   MIN & MAX                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Suppose I want to select a employee with minimum years of experience.
+
+SELECT MIN(years_of_exp) from students;
++-------------------+
+| MIN(years_of_exp) |
++-------------------+
+|                 6 |
++-------------------+
+1 row in set (0.00 sec)
+
+SELECT MAX(years_of_exp) from students;
++-------------------+
+| MAX(years_of_exp) |
++-------------------+
+|                20 |
++-------------------+
+1 row in set (0.00 sec)
+
+
+Return name of student with minimum years_of_exp.
+
+SELECT MIN(years_of_exp),student_fname from students;
+ERROR 1140 (42000): In aggregated query without GROUP BY, expression #2 of SELECT list contains nonaggregated column 'trendytech.students.
+student_fname'; this is incompatible with sql_mode=only_full_group_by
+
+Because our query does not  have any logic.
+
+
+SELECT student_fname from students order by years_of_exp limit 1;
++---------------+
+| student_fname |
++---------------+
+| rohit         |
++---------------+
+1 row in set (0.00 sec)
+
+
+---each source_of_joining i want to maximum experience ---
+
+SELECT source_of_joining,MAX(years_of_exp) from students group by source_of_joining;
+
++-------------------+-------------------+
+| source_of_joining | MAX(years_of_exp) |
++-------------------+-------------------+
+| friend            |                15 |
+| google            |                14 |
+| linknedin         |                12 |
+| quora             |                 8 |
+| youtube           |                20 |
++-------------------+-------------------+
+5 rows in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                         SUM                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Suppose I want to combine experience of all the people who joined me through source_of_joining.
+
+SELECT source_of_joining, sum(years_of_exp) from students GROUP BY source_of_joining;
+
++-------------------+-------------------+
+| source_of_joining | sum(years_of_exp) |
++-------------------+-------------------+
+| friend            |                15 |
+| google            |                14 |
+| linknedin         |                18 |
+| quora             |                 8 |
+| youtube           |                38 |
++-------------------+-------------------+
+5 rows in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      AVERAGE                     ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+SELECT source_of_joining, avg(years_of_exp) from students GROUP BY source_of_joining;
+
++-------------------+-------------------+
+| source_of_joining | avg(years_of_exp) |
++-------------------+-------------------+
+| friend            |           15.0000 |
+| google            |           14.0000 |
+| linknedin         |            9.0000 |
+| quora             |            8.0000 |
+| youtube           |           19.0000 |
++-------------------+-------------------+
+5 rows in set (0.00 sec)
+
+
+
+SELECT student_company, avg(years_of_exp) from students GROUP BY student_company;
++-----------------+-------------------+
+| student_company | avg(years_of_exp) |
++-----------------+-------------------+
+| google          |           12.0000 |
+| microsoft       |           15.0000 |
+| tcs             |           18.0000 |
+| walmart         |            7.0000 |
+| wipro           |           17.0000 |
++-----------------+-------------------+
+5 rows in set (0.00 sec)
+
+
+
+Lets try to add some more data in courses table.
+
++-----------+-----------------+------------------------+------------+
+| course_id | course_name     | course_duration_months | course_fee |
++-----------+-----------------+------------------------+------------+
+|         1 | big data        |                      6 |      50000 |
+|         2 | web development |                      3 |      20000 |
+|         3 | data science    |                      6 |      40000 |
+|         4 | dev ops         |                      1 |      10000 |
++-----------+-----------------+------------------------+------------+
+4 rows in set (0.00 sec)
+
+mysql> desc courses;
++------------------------+-------------+------+-----+---------+-------+
+| Field                  | Type        | Null | Key | Default | Extra |
++------------------------+-------------+------+-----+---------+-------+
+| course_id              | int(11)     | NO   | PRI | NULL    |       |
+| course_name            | varchar(30) | NO   |     | NULL    |       |
+| course_duration_months | int(11)     | NO   |     | NULL    |       |
+| course_fee             | int(11)     | NO   |     | NULL    |       |
++------------------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+
+Now I want my course_duration_months to support decimal data.(currenely it will round off)
+
+CREATE TABLE courses_new(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months DECIMAL(3,1) NOT NULL,
+    course_fee INT NOT NULL,
+    PRIMARY KEY(course_id)
+);
+Query OK, 0 rows affected (0.08 sec)
+
+DECIMAL(3,1) means I can store 3 digits in total number and 1 value after decimal. 
+
+
+insert into courses_new values (1,'big data',6.5,50000);
+insert into courses_new values (2,'web development',3.5,20000);
+insert into courses_new values (3,'data science',6,40000);
+
+Query OK, 1 row affected (0.06 sec)
+
++-----------+-----------------+------------------------+------------+
+| course_id | course_name     | course_duration_months | course_fee |
++-----------+-----------------+------------------------+------------+
+|         1 | big data        |                    6.5 |      50000 |
+|         2 | web development |                    3.5 |      20000 |
+|         3 | data science    |                    6.0 |      40000 |
++-----------+-----------------+------------------------+------------+
+2 rows in set (0.00 sec)
+
+UPDATE courses_new set course_fee=40000 where course_id=2;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+mysql> select* from courses_new;
++-----------+-----------------+------------------------+------------+
+| course_id | course_name     | course_duration_months | course_fee |
++-----------+-----------------+------------------------+------------+
+|         1 | big data        |                    6.5 |      50000 |
+|         2 | web development |                    3.5 |      40000 |
+|         3 | data science    |                    6.0 |      40000 |
++-----------+-----------------+------------------------+------------+
+3 rows in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                   TIMESTAMP                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+I want a record in table which will tell me when this record is insert,updated.
+
+CREATE TABLE courses_new(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months DECIMAL(3,1) NOT NULL,
+    course_fee INT NOT NULL,
+    changed_at TIMESTAMP DEFAULT NOW(),
+    PRIMARY KEY(course_id)
+);
+Query OK, 0 rows affected (0.19 sec)
+
+mysql> insert into courses_new values (1,'big data',6.5,50000);
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into courses_new values (2,'web development',3.5,20000);
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into courses_new values (3,'data science',6,40000);
+ERROR 1136 (21S01): Column count doesnt match value count at row 1
+
+
+
+insert into courses_new(course_id,course_name,course_duration_months,course_fee) values (1,'big data',6.5,50000);
+insert into courses_new(course_id,course_name,course_duration_months,course_fee) values (2,'web development',3.5,20000);
+insert into courses_new(course_id,course_name,course_duration_months,course_fee) values (3,'data science',6,40000);
+
+
++-----------+-----------------+------------------------+------------+---------------------+
+| course_id | course_name     | course_duration_months | course_fee | changed_at          |
++-----------+-----------------+------------------------+------------+---------------------+
+|         1 | big data        |                    6.5 |      50000 | 2022-09-14 11:47:52 |
+|         2 | web development |                    3.5 |      20000 | 2022-09-14 11:47:52 |
+|         3 | data science    |                    6.0 |      40000 | 2022-09-14 11:47:52 |
++-----------+-----------------+------------------------+------------+---------------------+
+
+
+mysql> update courses_new set course_fee=40000 where course_id=2;
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select* from courses_new;
++-----------+-----------------+------------------------+------------+---------------------+
+| course_id | course_name     | course_duration_months | course_fee | changed_at          |
++-----------+-----------------+------------------------+------------+---------------------+
+|         1 | big data        |                    6.5 |      50000 | 2022-09-14 11:47:52 |
+|         2 | web development |                    3.5 |      40000 | 2022-09-14 11:47:52 |
+|         3 | data science    |                    6.0 |      40000 | 2022-09-14 11:47:52 |
++-----------+-----------------+------------------------+------------+---------------------+
+3 rows in set (0.00 sec)
+
+Time stamp does not changed?
+We have to make a small defination change in table defination.
+
+
+CREATE TABLE courses_new(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months DECIMAL(3,1) NOT NULL,
+    course_fee INT NOT NULL,
+    changed_at TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
+    PRIMARY KEY(course_id)
+);
+
+OR
+
+CREATE TABLE courses_new(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months DECIMAL(3,1) NOT NULL,
+    course_fee INT NOT NULL,
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+    PRIMARY KEY(course_id)
+);
+
+mysql> drop table courses_new;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> select*from courses_new;
++-----------+-----------------+------------------------+------------+---------------------+
+| course_id | course_name     | course_duration_months | course_fee | changed_at          |
++-----------+-----------------+------------------------+------------+---------------------+
+|         1 | big data        |                    6.5 |      50000 | 2022-09-14 12:16:18 |
+|         2 | web development |                    3.5 |      20000 | 2022-09-14 12:16:18 |
+|         3 | data science    |                    6.0 |      40000 | 2022-09-14 12:16:19 |
++-----------+-----------------+------------------------+------------+---------------------+
+3 rows in set (0.00 sec)
+
+
+mysql> update courses_new set course_fee=40000 where course_id=2;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select*from courses_new;
++-----------+-----------------+------------------------+------------+---------------------+
+| course_id | course_name     | course_duration_months | course_fee | changed_at          |
++-----------+-----------------+------------------------+------------+---------------------+
+|         1 | big data        |                    6.5 |      50000 | 2022-09-14 12:16:18 |
+|         2 | web development |                    3.5 |      40000 | 2022-09-14 12:17:44 |
+|         3 | data science    |                    6.0 |      40000 | 2022-09-14 12:16:19 |
++-----------+-----------------+------------------------+------------+---------------------+
+3 rows in set (0.00 sec)

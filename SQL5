@@ -1,0 +1,516 @@
+mysql> show tables;
++----------------------+
+| Tables_in_trendytech |
++----------------------+
+| courses              |
+| students             |
++----------------------+
+2 rows in set (0.00 sec)
+
+
+I want to know in which course rahul has enrolled.
+ 
+students
+==========================
+student_fname,selected_course
+rahul,1
+
+courses
+===========================
+course_id,course_name
+1,big data
+
+There is no way from one single table we can get this information.
+
+We can write nested query.
+select course_name from courses where course_id=(select selected_course from students where student_fname='rahul');
+
+This is equivalent to select course_name from courses where course_id=(1);
+
++--------------+
+| course_name  |
++--------------+
+| data science |
++--------------+
+1 row in set (0.00 sec)
+
+
+
+We cannot write this if we want it for multiple people because it is a tidious task.
+
+We can instead join these tables based on 1 common column.
+selected_course and course_id is same (names can be diffrent but logic is same)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                        JOIN                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+select students.student_fname,students.student_lname,courses.course_name from students join courses on students.selected_course=courses.course_id;
+
+student_fname,student_lname these 2 are selected from students table and course_name this column is defined in table2.
+
++---------------+---------------+-----------------+
+| student_fname | student_lname | course_name     |
++---------------+---------------+-----------------+
+| rohit         | sharma        | web development |
+| shikhar       | dhawan        | big data        |
+| rahul         | dravid        | data science    |
+| kapil         | dev           | big data        |
+| brain         | lara          | big data        |
+| carl          | hooper        | big data        |
+| saurabh       | ganguly       | big data        |
++---------------+---------------+-----------------+
+7 rows in set (0.05 sec)
+
+
+By default is a inner join.
+Only the matching records fetches the results and non matching records will be ignored.
+
+
+mysql> select student_fname,selected_course from students;
++---------------+-----------------+
+| student_fname | selected_course |
++---------------+-----------------+
+| rohit         |               2 |
+| shikhar       |               1 |
+| rahul         |               3 |
+| kapil         |               1 |
+| brain         |               1 |
+| carl          |               1 |
+| saurabh       |               1 |
++---------------+-----------------+
+7 rows in set (0.00 sec)
+
+
+mysql> select course_id from courses;
++-----------+
+| course_id |
++-----------+
+|         1 |
+|         2 |
+|         3 |
+|         4 |
++-----------+
+4 rows in set (0.00 sec)
+
+In 2 table we have 4 courses (1 to 4),so only a match is possible for 3 and no match is possible for 4 because no one has taken 4 course.
+
+select students.student_fname,students.student_lname,courses.course_name from students join courses on students.selected_course=courses.course_id;
+
+
++---------------+---------------+-----------------+
+| student_fname | student_lname | course_name     |
++---------------+---------------+-----------------+
+| rohit         | sharma        | web development |
+| shikhar       | dhawan        | big data        |
+| rahul         | dravid        | data science    |
+| kapil         | dev           | big data        |
+| brain         | lara          | big data        |
+| carl          | hooper        | big data        |
+| saurabh       | ganguly       | big data        |
++---------------+---------------+-----------------+
+
+Id 4 is data structure and you will not se it in table so this is inner join.
+
+
+
+Only matching records are considered non matching records are discareded.
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                   LEFT OUTER                     ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+All the matching records from left and right table are considered + we have all the non matching records in left table which does not have the match in the right padded with nulls.
+
+mysql> select *from courses;
++-----------+-----------------+------------------------+------------+
+| course_id | course_name     | course_duration_months | course_fee |
++-----------+-----------------+------------------------+------------+
+|         1 | big data        |                      6 |      50000 |
+|         2 | web development |                      3 |      20000 |
+|         3 | data science    |                      6 |      40000 |
+|         4 | dev ops         |                      1 |      10000 |
++-----------+-----------------+------------------------+------------+
+4 rows in set (0.01 sec)
+
+I want to play around so I want to delete the course with coursse id 2,but I cannot  use delete from courses where course_id=2; 
+delete from courses where course_id=2;
+
+as we have set a foreign key contains.
+
+
+what this command will do is it will copy entire structure of students with data also but without foreign constraint.
+
+mysql> create table sturdents_latest as select * from students;
+Query OK, 7 rows affected (0.18 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+
+mysql> create table courses_latest as select * from courses;
+Query OK, 4 rows affected (0.07 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> delete from courses_latest where course_id=2;
+Query OK, 1 row affected (0.01 sec)
+
+
+Inner Join.
+
+select students_latest.student_fname,students_latest.student_lname,courses_latest.course_name from students_latest join courses_latest on students_latest.selected_course=courses_latest.course_id;
+
++---------------+---------------+--------------+
+| student_fname | student_lname | course_name  |
++---------------+---------------+--------------+
+| shikhar       | dhawan        | big data     |
+| rahul         | dravid        | data science |
+| kapil         | dev           | big data     |
+| brain         | lara          | big data     |
+| carl          | hooper        | big data     |
+| saurabh       | ganguly       | big data     |
++---------------+---------------+--------------+
+6 rows in set (0.00 sec)
+
+
+There is no web development here as right table dosent have a matching record.
+In students table we removed web development.
+
+
+Left outer join.
+
+
+select students_latest.student_fname,students_latest.student_lname,courses_latest.course_name from students_latest left join courses_latest on students_latest.selected_course=courses_latest.course_id;
+
+| student_fname | student_lname | course_name  |
++---------------+---------------+--------------+
+| shikhar       | dhawan        | big data     |
+| kapil         | dev           | big data     |
+| brain         | lara          | big data     |
+| carl          | hooper        | big data     |
+| saurabh       | ganguly       | big data     |
+| rahul         | dravid        | data science |
+| rohit         | sharma        | NULL         |
++---------------+---------------+--------------+
+7 rows in set (0.00 sec)
+
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                  RIGHT OUTER                     ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+All the matching records from left and right table are considered + we have all the non matching records in right table which does not have the match in the left padded with nulls.
+
+
+select students_latest.student_fname,students_latest.student_lname,courses_latest.course_name from students_latest right join courses_latest on students_latest.selected_course=courses_latest.course_id;
+
++---------------+---------------+--------------+
+| student_fname | student_lname | course_name  |
++---------------+---------------+--------------+
+| shikhar       | dhawan        | big data     |
+| rahul         | dravid        | data science |
+| kapil         | dev           | big data     |
+| brain         | lara          | big data     |
+| carl          | hooper        | big data     |
+| saurabh       | ganguly       | big data     |
+| NULL          | NULL          | dev ops      |
++---------------+---------------+--------------+
+7 rows in set (0.00 sec)
+
+none of our studnts have devops course
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                   FULL OUTER                     ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+All matching records + non matching records from left + non matching records form right
+(left outer +right outer)
+
+In my sql we dont have a keyword called full outer.
+We can do union of left outer and right outer.
+
+
+select students_latest.student_fname,students_latest.student_lname,courses_latest.course_name from students_latest left join courses_latest on students_latest.selected_course=courses_latest.course_id
+union 
+select students_latest.student_fname,students_latest.student_lname,courses_latest.course_name from students_latest right join courses_latest on students_latest.selected_course=courses_latest.course_id;
+
+
+
++---------------+---------------+--------------+
+| student_fname | student_lname | course_name  |
++---------------+---------------+--------------+
+| shikhar       | dhawan        | big data     |
+| kapil         | dev           | big data     |
+| brain         | lara          | big data     |
+| carl          | hooper        | big data     |
+| saurabh       | ganguly       | big data     |
+| rahul         | dravid        | data science |
+| rohit         | sharma        | NULL         |
+| NULL          | NULL          | dev ops      |
++---------------+---------------+--------------+
+8 rows in set (0.01 sec)
+
+
+
+
+Having vs where clause
+
+I want to get no of students from source_of_joining table
+select source_of_joining,count(*) from students group by source_of_joining;
++-------------------+----------+
+| source_of_joining | count(*) |
++-------------------+----------+
+| friend            |        1 |
+| google            |        1 |
+| linknedin         |        2 |
+| quora             |        1 |
+| youtube           |        2 |
++-------------------+----------+
+5 rows in set (0.00 sec)
+
+
+
+I want to display where more than 1 person has registered.
+
+select source_of_joining,count(*) from students group by source_of_joining where total>1;
+error.
+
+where can be used group by(it is good to filter individual records before aggregation);
+
+WE can use having.
+(it is used ot filter records after grouping has happned)
+
+mysql> select source_of_joining,count(*) as total from students group by source_of_joining having total>1;
++-------------------+-------+
+| source_of_joining | total |
++-------------------+-------+
+| linknedin         |     2 |
+| youtube           |     2 |
++-------------------+-------+
+2 rows in set (0.00 sec)
+
+where is used before the aggregation and having is used after the aggregation.
+
+
+select source_of_joining,count(*) as total from students group by source_of_joining having source_of_joining='linknedin;
++-------------------+-------+
+| source_of_joining | total |
++-------------------+-------+
+| linknedin         |     2 |
++-------------------+-------+
+1 row in set (0.00 sec)
+where will give error.
+
+
+
+It could be better if we do this way
+(i am filtering individual records before even doing complex work like aggregation)
+select source_of_joining,count(*) as total from students where source_of_joining='linknedin group by source_of_joining;
+
+
+mysql> select source_of_joining,count(*) as total from students where source_of_joining='linknedin' group by source_of_joining;
++-------------------+-------+
+| source_of_joining | total |
++-------------------+-------+
+| linknedin         |     2 |
++-------------------+-------+
+1 row in set (0.00 sec)
+
+
+(more performant)
+
+Can we use where and having in same query?
+I want to know location from which 1 students have joined and students experience is > 10.
+
+select location,count(*) as total from students where years_of_exp>10 group by location having total>1;
+thought process should be do filtering as early as possible. 
+
+
++----------+-------+
+| location | total |
++----------+-------+
+| pune     |     3 |
++----------+-------+
+1 row in set (0.00 sec)
+
+
+=================================================================================================================================
+Over Clause
+
+create table employee(
+    firstname varchar(20),
+    lastname varchar(20),
+    age int,
+    salary int, 
+    location varchar(20)
+);
+
+insert into employee values('sachin','sharma',28,10000,'bangalore');
+
+insert into employee values('shane','warne',30,20000,'bangalore');
+
+insert into employee values('rohit','sharma',32,30000,'hyderabad');
+
+insert into employee values('shikar','dhawan',32,25000,'hyderabad');
+
+insert into employee values('rahul','dravid',31,20000,'bangalore');
+
+insert into employee values('saurabh','ganguly',32,15000,pune);
+
+insert into employee values('kapil','dev',34,10000,'pune');
+
+--How many people are from each location and avg salary at each Location--
+
+
+select location,count(location),avg(salary) from employee group by location;
+
+
+Output:
+
+location	count(location)	avg(salary)
+bangalore	       3	   16666.6667
+hyderabad	       2  	   27500.0000
+pune	           2	   12500.0000
+
+What if i want something like this?
+
+Output:
+
+firstname	lastname	age	salary	location
+sachin	sharma	bangalore	       3	   16666.6667
+shane	warne	bangalore	       3	   16666.6667
+rohit	sharma	hyderabad	       2  	   27500.0000
+shikar	dhawan	hyderabad	       2  	   27500.0000
+rahul	dravid	bangalore	       3	   16666.6667
+saurabh	ganguly	pune	           2	   12500.0000
+kapil	dev	34	pune	           2	   12500.0000
+
+
+
+
+select firstname,lastname,location,count(location),avg(salary) from employee group by location;
+
+ERROR 1055 (42000) at line 26: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 
+'db_3ygdt2a3e.employee.firstname' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with
+sql_mode=only_full_group_by
+
+
+
+
+We can try it using join...
+
+
+select firstname,lastname,location,total_count,avg_salary from employee join 
+(select location,count(location),avg(salary) from employee group by location) temptable on employee.location=temptable.location;
+
+AS location column is present in both tables it will show ambiguity. 
+ERROR 1052 (23000) at line 32: Column 'location' in field list is ambiguous
+
+
+select firstname,lastname,employee.location,total_count,avg_salary from employee join 
+(select location,count(location) as total_count,avg(salary) as avg_salary from employee group by location) temptable on employee.location=temptable.location;
+
+
+firstname	lastname	location	total_count	avg_salary
+sachin	sharma	bangalore	3	16666.6667
+shane	warne	bangalore	3	16666.6667
+rohit	sharma	hyderabad	2	27500.0000
+shikar	dhawan	hyderabad	2	27500.0000
+rahul	dravid	bangalore	3	16666.6667
+saurabh	ganguly	pune	2	12500.0000
+kapil	dev	pune	2	12500.0000
+
+
+---Easier way---
+Use OVER PARTITION BY to achieve this.
+
+select firstname,lastname,location,count(location) OVER(PARTITION BY location),
+avg(salary) OVER (PARTITION BY location) as average from employee;
+
+
+
+This is how we use over and partition by to club the non aggregated columns(firstname,lastname,location) along with 
+aggregated columns(OVER(PARTITION BY location),avg(salary) OVER (PARTITION BY location)) easliy.
+
+
+
+Row Number function
+row number cannot work without order by(no point of giving some numbering when you are not ordering it).
+
+
+I want highest to lowest salary and row numbers starting from 1.
+
+select firstname,lastname,salary,row_number over (order by salary desc) from employee;
+
+firstname	lastname	salary	row_number() over (order by salary desc)
+rohit	sharma	        30000	1
+shikar	dhawan	        25000	2
+shane	warne	        20000	3
+rahul	dravid	        20000	4
+saurabh	ganguly	        15000	5
+sachin	sharma	        10000	6
+kapil	dev	            10000	7
+
+
+Find 5 highest salary.
+select * from (select firstname,lastname,salary,row_number() over (order by salary desc) as rownum from employee) temptable where rownum=5;
+
+Output:
+
+firstname	lastname	salary	rownum
+saurabh	ganguly	15000	5
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++             RANK AND DESNSE RANK                 ++++ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+They are use to solve problems of Duplicates in a table.
+Order by is mandatory for them also.(partition by is optional)
+
+
+select firstname,lastname,salary ,row_number() over(order by salary desc) from employee;
+
+each row has diff no.
+
+firstname	lastname	salary	row_number() over(order by salary desc)
+rohit	sharma	30000	1
+shikar	dhawan	25000	2
+shane	warne	20000	3
+rahul	dravid	20000	4
+saurabh	ganguly	15000	5
+sachin	sharma	10000	6
+kapil	dev	10000	7
+
+
+select firstname,lastname,salary ,rank() over(order by salary desc) from employee;
+
+same rank to duplicates.(but it ommited 4)
+
+firstname	lastname	salary	rank() over(order by salary desc)
+rohit	sharma	30000	1
+shikar	dhawan	25000	2
+shane	warne	20000	3
+rahul	dravid	20000	3
+saurabh	ganguly	15000	5
+sachin	sharma	10000	6
+kapil	dev	10000	6
+
+
+select firstname,lastname,salary ,dense_rank() over(order by salary desc) from employee;
+(no ranks are skipped)
+
+firstname	lastname	salary	dense_rank() over(order by salary desc)
+rohit	sharma	30000	1
+shikar	dhawan	25000	2
+shane	warne	20000	3
+rahul	dravid	20000	3
+saurabh	ganguly	15000	4
+sachin	sharma	10000	5
+kapil	dev	10000	5
+
+
+Usage of all completely depends on requirements.

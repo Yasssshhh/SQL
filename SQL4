@@ -1,0 +1,305 @@
+use database trendytech;
+
+mysql> desc students;
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+| Field                   | Type        | Null | Key | Default           | Extra                       |
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+| student_id              | int(11)     | NO   | PRI | NULL              | auto_increment              |
+| student_fname           | varchar(30) | NO   |     | NULL              |                             |
+| student_lname           | varchar(30) | NO   |     | NULL              |                             |
+| student_mname           | varchar(30) | YES  |     | NULL              |                             |
+| student_email           | varchar(30) | NO   | UNI | NULL              |                             |
+| student_phone           | varchar(15) | NO   |     | NULL              |                             |
+| student_alternate_phone | varchar(15) | YES  |     | NULL              |                             |
+| enrollment_date         | timestamp   | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+| selected_course         | int(11)     | NO   | MUL | 1                 |                             |
+| years_of_exp            | int(11)     | NO   |     | NULL              |                             |
+| student_company         | varchar(30) | YES  |     | NULL              |                             |
+| batch_date              | varchar(30) | NO   |     | NULL              |                             |
+| source_of_joining       | varchar(30) | NO   |     | NULL              |                             |
+| location                | varchar(30) | NO   |     | NULL              |                             |
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+14 rows in set (0.00 sec)
+
+
+mysql> select*from students where location='bangalore';
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
+-------+-----------------+--------------+-----------------+------------+-------------------+-----------+
+| student_id | student_fname | student_lname | student_mname | student_email     | student_phone | student_alternate_phone | enrollment_da
+te     | selected_course | years_of_exp | student_company | batch_date | source_of_joining | location  |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
+-------+-----------------+--------------+-----------------+------------+-------------------+-----------+
+|          2 | rohit         | sharma        | NULL          | rohit@gmail.com   | 9191919191    | NULL                    | 2022-09-12 11
+:59:51 |               2 |            6 | walmart         | 5-02-2021  | linknedin         | bangalore |
+|          3 | shikhar       | dhawan        | NULL          | shikhar@gmail.com | 9393939393    | NULL                    | 2022-09-12 11
+:59:51 |               1 |           12 | google          | 12-02-2021 | linknedin         | bangalore |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
+-------+-----------------+--------------+-----------------+------------+-------------------+-----------+
+2 rows in set (0.00 sec)
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                    NOT EQUAL                     ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+What if I want people not from Bangalore.
+select*from students where location !='bangalore';
+
+
+select*from courses;
++-----------+-----------------+------------------------+------------+
+| course_id | course_name     | course_duration_months | course_fee |
++-----------+-----------------+------------------------+------------+
+|         1 | big data        |                      6 |      50000 |
+|         2 | web development |                      3 |      20000 |
+|         3 | data science    |                      6 |      40000 |
+|         4 | dev ops         |                      1 |      10000 |
++-----------+-----------------+------------------------+------------+
+4 rows in set (0.03 sec)
+
+
+What if I wanted all courses having word data in them.
+
+select * from courses where course_name like '%data%';
+
++-----------+--------------+------------------------+------------+
+| course_id | course_name  | course_duration_months | course_fee |
++-----------+--------------+------------------------+------------+
+|         1 | big data     |                      6 |      50000 |
+|         3 | data science |                      6 |      40000 |
++-----------+--------------+------------------------+------------+
+2 rows in set (0.00 sec)
+
+
+What if I wanted all courses do not having word data in them.
+
+mysql> select * from courses where course_name not like '%data%';
++-----------+-----------------+------------------------+------------+
+| course_id | course_name     | course_duration_months | course_fee |
++-----------+-----------------+------------------------+------------+
+|         2 | web development |                      3 |      20000 |
+|         4 | dev ops         |                      1 |      10000 |
++-----------+-----------------+------------------------+------------+
+2 rows in set (0.00 sec)
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                    LESS THAN                     ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+All students having years_of_exp less than 8 form bangalore where source_of_joining is linknedin;
+
+select * from students where years_of_exp < 8 and source_of_joining ='linknedin' and location='bangalore';
++------------+---------------+---------------+---------------+-----------------+---------------+-------------------------+----------------
+-----+-----------------+--------------+-----------------+------------+-------------------+-----------+
+| student_id | student_fname | student_lname | student_mname | student_email   | student_phone | student_alternate_phone | enrollment_date
+     | selected_course | years_of_exp | student_company | batch_date | source_of_joining | location  |
++------------+---------------+---------------+---------------+-----------------+---------------+-------------------------+----------------
+-----+-----------------+--------------+-----------------+------------+-------------------+-----------+
+|          2 | rohit         | sharma        | NULL          | rohit@gmail.com | 9191919191    | NULL                    | 2022-09-12 11:5
+9:51 |               2 |            6 | walmart         | 5-02-2021  | linknedin         | bangalore |
++------------+---------------+---------------+---------------+-----------------+---------------+-------------------------+----------------
+-----+-----------------+--------------+-----------------+------------+-------------------+-----------+
+1 row in set (0.00 sec)
+
+
+
+I want all people who do not fall between 8 to 12 years of experience
+
+select * from students where years_of_exp < 8 and years_of_exp>12;
+Empty set (0.00 sec)
+
+
+select * from students where years_of_exp < 8 or years_of_exp>12;
+select * from students where years_of_exp not between 8 and 12;
+
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
+-------+-----------------+--------------+-----------------+------------+-------------------+-----------+
+| student_id | student_fname | student_lname | student_mname | student_email     | student_phone | student_alternate_phone | enrollment_da
+te     | selected_course | years_of_exp | student_company | batch_date | source_of_joining | location  |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
+-------+-----------------+--------------+-----------------+------------+-------------------+-----------+
+|          2 | rohit         | sharma        | NULL          | rohit@gmail.com   | 9191919191    | NULL                    | 2022-09-12 11
+:59:51 |               2 |            6 | walmart         | 5-02-2021  | linknedin         | bangalore |
+|          5 | kapil         | dev           | NULL          | kapil@gmail.com   | 9291292292    | NULL                    | 2022-09-12 11
+:59:52 |               1 |           15 | microsoft       | 5-02-2021  | friend            | pune      |
+|          6 | brain         | lara          | NULL          | brain@gmail.com   | 929127292     | NULL                    | 2022-09-12 11
+:59:52 |               1 |           18 | tcs             | 5-02-2021  | youtube           | pune      |
+|          7 | carl          | hooper        | NULL          | carl@gmail.com    | 929127392     | NULL                    | 2022-09-12 11
+:59:52 |               1 |           20 | wipro           | 19-02-2021 | youtube           | pune      |
+|          8 | saurabh       | ganguly       | NULL          | saurabh@gmail.com | 929127492     | NULL                    | 2022-09-12 11
+:59:52 |               1 |           14 | wipro           | 19-02-2021 | google            | chennai   |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
+-------+-----------------+--------------+-----------------+------------+-------------------+-----------+
+5 rows in set (0.00 sec)
+
+
+select * from students where years_of_exp between 8 and 12;
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
+-------+-----------------+--------------+-----------------+------------+-------------------+-----------+
+| student_id | student_fname | student_lname | student_mname | student_email     | student_phone | student_alternate_phone | enrollment_da
+te     | selected_course | years_of_exp | student_company | batch_date | source_of_joining | location  |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
+-------+-----------------+--------------+-----------------+------------+-------------------+-----------+
+|          3 | shikhar       | dhawan        | NULL          | shikhar@gmail.com | 9393939393    | NULL                    | 2022-09-12 11
+:59:51 |               1 |           12 | google          | 12-02-2021 | linknedin         | bangalore |
+|          4 | rahul         | dravid        | NULL          | rahul@gmail.com   | 9494949494    | NULL                    | 2022-09-12 11
+:59:51 |               3 |            8 | walmart         | 19-02-2021 | quora             | chennai   |
++------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
+-------+-----------------+--------------+-----------------+------------+-------------------+-----------+
+2 rows in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                        OR                        ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+Now I want to get no of students working for flipkart, walmart or microsoft.
+
+select * from students where student_company='flipkart' or student_company='walmart'or student_company='microsoft';
+
++------------+---------------+---------------+---------------+-----------------+---------------+-------------------------+----------------
+-----+-----------------+--------------+-----------------+------------+-------------------+-----------+
+| student_id | student_fname | student_lname | student_mname | student_email   | student_phone | student_alternate_phone | enrollment_date
+     | selected_course | years_of_exp | student_company | batch_date | source_of_joining | location  |
++------------+---------------+---------------+---------------+-----------------+---------------+-------------------------+----------------
+-----+-----------------+--------------+-----------------+------------+-------------------+-----------+
+|          2 | rohit         | sharma        | NULL          | rohit@gmail.com | 9191919191    | NULL                    | 2022-09-12 11:5
+9:51 |               2 |            6 | walmart         | 5-02-2021  | linknedin         | bangalore |
+|          4 | rahul         | dravid        | NULL          | rahul@gmail.com | 9494949494    | NULL                    | 2022-09-12 11:5
+9:51 |               3 |            8 | walmart         | 19-02-2021 | quora             | chennai   |
+|          5 | kapil         | dev           | NULL          | kapil@gmail.com | 9291292292    | NULL                    | 2022-09-12 11:5
+9:52 |               1 |           15 | microsoft       | 5-02-2021  | friend            | pune      |
++------------+---------------+---------------+---------------+-----------------+---------------+-------------------------+----------------
+-----+-----------------+--------------+-----------------+------------+-------------------+-----------+
+3 rows in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      IN                          ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+We can do this in a more simpler manner using in operator.
+select * from students where student_company in('flipkart','walmart','microsoft');
+
+
+If a course is more than 4 months we categorize it as master program else it is a diploma.
+
+
+select * from courses;
++-----------+-----------------+------------------------+------------+
+| course_id | course_name     | course_duration_months | course_fee |
++-----------+-----------------+------------------------+------------+
+|         1 | big data        |                      6 |      50000 |
+|         2 | web development |                      3 |      20000 |
+|         3 | data science    |                      6 |      40000 |
+|         4 | dev ops         |                      1 |      10000 |
++-----------+-----------------+------------------------+------------+
+4 rows in set (0.04 sec)
+
+Three columns are directly from columns and we 4 column is what we want to derive from some logic.
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      CASE                        ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+select
+case
+when then
+else
+from
+
+
+select course_id,course_name,course_fee,
+CASE
+    WHEN course_duration_months>4 THEN 'masters'
+    ELSE 'diploma'
+END as course_type
+from courses;
+
++-----------+-----------------+------------+-------------+
+| course_id | course_name     | course_fee | course_type |
++-----------+-----------------+------------+-------------+
+|         1 | big data        |      50000 | masters     |
+|         2 | web development |      20000 | diploma     |
+|         3 | data science    |      40000 | masters     |
+|         4 | dev ops         |      10000 | diploma     |
++-----------+-----------------+------------+-------------+
+4 rows in set (0.00 sec)
+
+
+
+
+People working in flipkart,microsoft,walmart are working in product based and all other are working in service based;
+
+select student_id,student_fname,student_lname,student_company,
+CASE 
+WHEN student_company in ('flipkart','walmart','microsoft')THEN 'Product_based' 
+ELSE 'Service Based'
+END as Company_type
+from students;
+
+
++------------+---------------+---------------+-----------------+---------------+
+| student_id | student_fname | student_lname | student_company | Company_type  |
++------------+---------------+---------------+-----------------+---------------+
+|          2 | rohit         | sharma        | walmart         | Product_based |
+|          3 | shikhar       | dhawan        | google          | Service Based |
+|          4 | rahul         | dravid        | walmart         | Product_based |
+|          5 | kapil         | dev           | microsoft       | Product_based |
+|          6 | brain         | lara          | tcs             | Service Based |
+|          7 | carl          | hooper        | wipro           | Service Based |
+|          8 | saurabh       | ganguly       | wipro           | Service Based |
++------------+---------------+---------------+-----------------+---------------+
+7 rows in set (0.01 sec)
+
+
+There can be multiple when then statements simpler.
+
+select student_id,student_fname,student_lname,student_company,
+CASE 
+WHEN student_company in ('flipkart','walmart','microsoft')THEN 'Product_based' 
+WHEN student_company is NULL THEN 'Invalid Company'
+ELSE 'Service Based'
+END as Company_type
+from students;
+
+
+
+                                        ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                        ++++             SQL Performance UNION vs OR          ++++               
+                                        ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+LC reference:
+UNION can be a bit faster because each select can use its own index, while OR can use index for area and 
+full-scan for population (or vise versa).But it is not good memory wise.
+---------------------------------------------------------------------------------------------------------------
+
+select username from users where company = 'bbc' or company = 'itv';
+This is equivalent to:
+select username from users where company IN ('bbc', 'itv');
+
+
+MySQL can use an index on company for this query just fine.Theres no need to do any UNION.
+The more tricky case is where you have an OR condition that involves two different columns.
+select username from users where company = 'bbc' or city = 'London';
+
+Suppose theres an index on company and a separate index on city. 
+Given that MySQL usually uses only one index per table in a given query, which index should it use?
+
+If it uses the index on company, it would still have to do a table-scan to find rows where city is London.
+If it uses the index on city, it would have to do a table-scan for rows where company is bbc.
+
+The UNION solution is for this type of case:
+
+select username from users where company = 'bbc' 
+union
+select username from users where city = 'London';
+Now each sub-query can use the index for its search, and the results of the subquery are combined by the UNION.
