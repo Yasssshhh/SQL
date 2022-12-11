@@ -564,16 +564,9 @@ mysql> SELECT firstname,lastname from employee;
                                               ++++                      WHERE                       ++++ 
                                               ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-The WHERE clause is used to filter records.It is used to extract only those records that fulfill a specified condition.
+The WHERE clause is used to filter records.
+It is used to extract only those records that fulfill a specified condition.
 
-mysql> SELECT*FROM employee WHERE age>29;
-+----+-----------+------------+----------+-----+--------+----------+
-| id | firstname | middlename | lastname | age | salary | location |
-+----+-----------+------------+----------+-----+--------+----------+
-|  2 | kapil     | NULL       | sharma   |  30 |   2000 | banglore |
-|  3 | Maneesh   | NULL       | sharma   |  32 |   3000 | banglore |
-+----+-----------+------------+----------+-----+--------+----------+
-2 rows in set (0.00 sec)
 
 mysql> SELECT*FROM employee WHERE firstname='maneesh';
 +----+-----------+------------+----------+-----+--------+----------+
@@ -581,6 +574,7 @@ mysql> SELECT*FROM employee WHERE firstname='maneesh';
 +----+-----------+------------+----------+-----+--------+----------+
 |  3 | Maneesh   | NULL       | sharma   |  32 |   3000 | banglore |
 +----+-----------+------------+----------+-----+--------+----------+
+
 (where caluse is not sensitive because we have given firstname as maneesh but in table it is Maneesh).
 
 TO make where clause case sensitive, we can use keyword binary.
@@ -588,8 +582,12 @@ TO make where clause case sensitive, we can use keyword binary.
 mysql> SELECT*FROM employee WHERE binary firstname='maneesh';
 Empty set (0.00 sec)
 
----Alias---
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      ALIAS                       ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              
 If you want to select something as other name.(Used to give a table or a column in a table temporary name).
+
 SELECT firstname as name,lastname as surname from employee;
 +---------+---------+
 | name    | surname |
@@ -797,9 +795,3 @@ when you do delete it removes records individually one by one(it has to do somet
 when we are using truncate,it drops table and recreate it.
 
 Truncate is more efficient as it is quick when records are more.
-
-mysql> truncate table employee;
-Query OK, 0 rows affected (0.17 sec)
-
-mysql> select*from employee;
-Empty set (0.00 sec)

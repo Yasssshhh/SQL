@@ -95,32 +95,6 @@ batch_date, source_of_joining, location) values ('kapil','dev','kapil@gmail.com'
 'google','chennai');
 
 
-
-mysql> select*from students;
-+------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+--------------+----------
--------+------------+-------------------+-----------+
-| student_id | student_fname | student_lname | student_mname | student_email     | student_phone | student_alternate_phone | enrollment_date     | years_of_exp | student_c
-ompany | batch_date | source_of_joining | location  |
-+------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+--------------+----------
--------+------------+-------------------+-----------+
-|          1 | virat         | kohli         | NULL          | virat@gmail.com   | 9292929292    | NULL                    | 2022-09-12 11:24:42 |            3 | flipkart
-       | 5-02-2021  | linknedin         | hyderabad |
-|          2 | shikhar       | dhawan        | NULL          | shikhar@gmail.com | 9393939393    | NULL                    | 2022-09-12 11:24:42 |           12 | google
-     | 12-02-2021 | linknedin         | bangalore |
-|          3 | rahul         | dravid        | NULL          | rahul@gmail.com   | 9494949494    | NULL                    | 2022-09-12 11:24:45 |            8 | walmart
-      | 19-02-2021 | quora             | chennai   |
-|          4 | kapil         | dev           | NULL          | kapil@gmail.com   | 9291292292    | NULL                    | 2022-09-12 11:24:56 |           15 | microsoft
-       | 5-02-2021  | friend            | pune      |
-|          5 | brain         | lara          | NULL          | brain@gmail.com   | 929127292     | NULL                    | 2022-09-12 11:24:56 |           18 | tcs
- 5-02-2021  | youtube           | pune      |
-|          6 | carl          | hooper        | NULL          | carl@gmail.com    | 929127392     | NULL                    | 2022-09-12 11:24:56 |           20 | wipro
-   | 19-02-2021 | youtube           | pune      |
-|          7 | saurabh       | ganguly       | NULL          | saurabh@gmail.com | 929127492     | NULL                    | 2022-09-12 11:24:56 |           14 | wipro
-   | 19-02-2021 | google            | chennai   |
-+------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+---------------------+--------------+----------
--------+------------+-------------------+-----------+
-
-
 SELECT student_id,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students;
 
 +------------+---------------------+---------------+-------------------+--------------+-----------------+------------+-------------------+-----------+
@@ -137,7 +111,7 @@ SELECT student_id,enrollment_date,student_fname,student_email,years_of_exp,stude
 7 rows in set (0.00 sec)
 
 
----Suppose in future we have some courses also for students---
+---Suppose in future we have some courses also for the students---
 
 CREATE TABLE courses(
     course_id INT NOT NULL,
@@ -147,13 +121,12 @@ CREATE TABLE courses(
     PRIMARY KEY(course_id)
 );
 
----Seed Data---
+---Seed Database Courses---
 
 insert into courses values (1,'big data',6,50000);
 insert into courses values (2,'web development',3,20000);
 insert into courses values (3,'data science',6,40000);
 insert into courses values (4,'dev ops',1,10000);
-
 
 
 drop table students;
@@ -258,7 +231,7 @@ CREATE TABLE students(
 
 You cannot add foreign key on column which is not  a primary key.
 
----seclected course is dependent upon courses table courses_id column---
+---selected course is dependent upon courses table courses_id column---
 ---parent table is courses table as students table has dependency on that and child table is student table as it is dependent---
 
 mysql> describe students;
@@ -422,7 +395,6 @@ select student_id, student_fname, years_of_exp from students ORDER BY years_of_e
 ---You can also sort it on basis of column number---
 select student_id, student_fname, years_of_exp from students ORDER BY 3 desc;
 
-
 select student_id, student_fname, years_of_exp from students ORDER BY years_of_exp,student_fname desc;
 
 --First this query will order by years of exp(people with lowest years of exp will come at top) and then 
@@ -487,16 +459,6 @@ SELECT source_of_joining FROM students ORDER BY enrollment_date DESC LIMIT 5;
 | linknedin         |
 +-------------------+
 5 rows in set (0.00 sec)
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
---we will discuss this later---
-
-SELECT DISTINCT source_of_joining FROM students ORDER BY enrollment_date DESC LIMIT 5; 
-ERROR 3065 (HY000): Expression #1 of ORDER BY clause is not in SELECT list, references column 'trendytech.students.enrollment_date' which is not in SELECT list; this is incompatible
-with DISTINCT
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 
 ---To get person who has joined very last---
 
@@ -596,7 +558,8 @@ SELECT student_id, student_fname, years_of_exp from students WHERE student_fname
 
 Now we will see why this query is failing.
 
-SELECT DISTINCT source_of_joining FROM students ORDER BY enrollment_date DESC LIMIT 5; 
+SELECT DISTINCT source_of_joining FROM students ORDER BY enrollment_date DESC LIMIT 5;
+
 ERROR 3065 (HY000): Expression #1 of ORDER BY clause is not in SELECT list, references column 'trendytech.students.enrollment_date' 
 which is not in SELECT list; this is incompatible
 with DISTINCT

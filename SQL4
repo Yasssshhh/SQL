@@ -22,27 +22,11 @@ mysql> desc students;
 14 rows in set (0.00 sec)
 
 
-mysql> select*from students where location='bangalore';
-+------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
--------+-----------------+--------------+-----------------+------------+-------------------+-----------+
-| student_id | student_fname | student_lname | student_mname | student_email     | student_phone | student_alternate_phone | enrollment_da
-te     | selected_course | years_of_exp | student_company | batch_date | source_of_joining | location  |
-+------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
--------+-----------------+--------------+-----------------+------------+-------------------+-----------+
-|          2 | rohit         | sharma        | NULL          | rohit@gmail.com   | 9191919191    | NULL                    | 2022-09-12 11
-:59:51 |               2 |            6 | walmart         | 5-02-2021  | linknedin         | bangalore |
-|          3 | shikhar       | dhawan        | NULL          | shikhar@gmail.com | 9393939393    | NULL                    | 2022-09-12 11
-:59:51 |               1 |           12 | google          | 12-02-2021 | linknedin         | bangalore |
-+------------+---------------+---------------+---------------+-------------------+---------------+-------------------------+--------------
--------+-----------------+--------------+-----------------+------------+-------------------+-----------+
-2 rows in set (0.00 sec)
-
                                               ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                                               ++++                    NOT EQUAL                     ++++ 
                                               ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-What if I want people not from Bangalore.
 select*from students where location !='bangalore';
 
 
@@ -56,7 +40,6 @@ select*from courses;
 |         4 | dev ops         |                      1 |      10000 |
 +-----------+-----------------+------------------------+------------+
 4 rows in set (0.03 sec)
-
 
 What if I wanted all courses having word data in them.
 
@@ -209,13 +192,6 @@ Three columns are directly from columns and we 4 column is what we want to deriv
                                               ++++                      CASE                        ++++ 
                                               ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-select
-case
-when then
-else
-from
-
-
 select course_id,course_name,course_fee,
 CASE
     WHEN course_duration_months>4 THEN 'masters'
@@ -232,7 +208,6 @@ from courses;
 |         4 | dev ops         |      10000 | diploma     |
 +-----------+-----------------+------------+-------------+
 4 rows in set (0.00 sec)
-
 
 
 

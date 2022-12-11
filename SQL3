@@ -78,7 +78,7 @@ SELECT COUNT(*) FROM students where batch_date like '%-02-%';
                                               ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                                               ++++                    GROUP BY                      ++++ 
                                               ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+If you are having something as your grouping column, that should always be present in your select;
 Used to group some data based on some logic.
 
 Need of group by?
@@ -108,9 +108,6 @@ ERROR 1140 (42000): In aggregated query without GROUP BY, expression #1 of SELEC
 ompatible with sql_mode=only_full_group_by
 
 
----note--- 
-If you are having something as your grouping column, that should always be present in your select;
-
 SELECT location,count(*) FROM students GROUP BY location;
 
 +-----------+----------+
@@ -122,11 +119,9 @@ SELECT location,count(*) FROM students GROUP BY location;
 +-----------+----------+
 3 rows in set (0.00 sec)
 
----this will fail---
-SELECT location,count(*) FROM students GROUP BY source_of_joining;
+
 
 Now I want to GROUP on basis of location and source_of_joining.
-
 
 SELECT location,source_of_joining,count(*) FROM students GROUP BY location,source_of_joining;
 +-----------+-------------------+----------+
@@ -169,8 +164,6 @@ mysql> select batch_date,selected_course from students;
 | 19-02-2021 |               1 |
 +------------+-----------------+
 7 rows in set (0.00 sec)
-
-
 
 mysql> select batch_date,selected_course,count(*) from students GROUP BY batch_date,selected_course;
 
@@ -227,7 +220,7 @@ SELECT student_fname from students order by years_of_exp limit 1;
 1 row in set (0.00 sec)
 
 
----each source_of_joining i want to maximum experience ---
+---Each source_of_joining I want to maximum experience ---
 
 SELECT source_of_joining,MAX(years_of_exp) from students group by source_of_joining;
 
@@ -296,32 +289,7 @@ SELECT student_company, avg(years_of_exp) from students GROUP BY student_company
 5 rows in set (0.00 sec)
 
 
-
-Lets try to add some more data in courses table.
-
-+-----------+-----------------+------------------------+------------+
-| course_id | course_name     | course_duration_months | course_fee |
-+-----------+-----------------+------------------------+------------+
-|         1 | big data        |                      6 |      50000 |
-|         2 | web development |                      3 |      20000 |
-|         3 | data science    |                      6 |      40000 |
-|         4 | dev ops         |                      1 |      10000 |
-+-----------+-----------------+------------------------+------------+
-4 rows in set (0.00 sec)
-
-mysql> desc courses;
-+------------------------+-------------+------+-----+---------+-------+
-| Field                  | Type        | Null | Key | Default | Extra |
-+------------------------+-------------+------+-----+---------+-------+
-| course_id              | int(11)     | NO   | PRI | NULL    |       |
-| course_name            | varchar(30) | NO   |     | NULL    |       |
-| course_duration_months | int(11)     | NO   |     | NULL    |       |
-| course_fee             | int(11)     | NO   |     | NULL    |       |
-+------------------------+-------------+------+-----+---------+-------+
-4 rows in set (0.01 sec)
-
-
-Now I want my course_duration_months to support decimal data.(currenely it will round off)
+Now I want my course_duration_months to support decimal data.(currenetly it will round off)
 
 CREATE TABLE courses_new(
     course_id INT NOT NULL,
