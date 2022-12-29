@@ -1,0 +1,452 @@
+Aggregate functions: (Clubbing few things and getting the output)
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                       COUNT                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The COUNT() function returns the number of rows that matches a specified criterion.
+
+SELECT COUNT(column_name)
+FROM table_name
+WHERE condition;
+
+SELECT COUNT(*) FROM students;
+
++----------+
+| COUNT(*) |
++----------+
+|        7 |
++----------+
+1 row in set (0.00 sec)
+
+From how many diffrent companies people are joining my course.
+
+SELECT count(student_company) from students;
+
++------------------------+
+| count(student_company) |
++------------------------+
+|                      7 |
++------------------------+
+1 row in set (0.00 sec)
+
+SELECT count(DISTINCT student_company) from students;
++---------------------------------+
+| count(DISTINCT student_company) |
++---------------------------------+
+|                               5 |
++---------------------------------+
+1 row in set (0.04 sec)
+
+
+SELECT count(DISTINCT student_company) AS num_companies from students;
++---------------+
+| num_companies |
++---------------+
+|             5 |
++---------------+
+1 row in set (0.00 sec)
+
+
+SELECT count(DISTINCT source_of_joining) from students;
+
++-----------------------------------+
+| count(DISTINCT source_of_joining) |
++-----------------------------------+
+|                                 5 |
++-----------------------------------+
+1 row in set (0.00 sec)
+
+
+Number of students who have registered for feb batch.
+
+SELECT batch_date from students;
++------------+
+| batch_date |
++------------+
+| 5-02-2021  |
+| 12-02-2021 |
+| 19-02-2021 |
+| 5-02-2021  |
+| 5-02-2021  |
+| 19-02-2021 |
+| 19-02-2021 |
++------------+
+7 rows in set (0.00 sec)
+
+
+SELECT COUNT(*) FROM students where batch_date like '%-02-%';
++----------+
+| COUNT(*) |
++----------+
+|        7 |
++----------+
+1 row in set (0.00 sec)
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                   MIN & MAX                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+SELECT MIN(column_name)
+FROM table_name
+WHERE condition;
+
+SELECT MAX(column_name)
+FROM table_name
+WHERE condition;
+
+
+The MIN() function returns the smallest value of the selected column.
+
+SELECT MIN(years_of_exp) from students;
++-------------------+
+| MIN(years_of_exp) |
++-------------------+
+|                 6 |
++-------------------+
+1 row in set (0.00 sec)
+
+Return name of student with minimum years_of_exp ?
+
+SELECT MIN(years_of_exp),student_fname from students;
+ERROR 1140 (42000): In aggregated query without GROUP BY, expression #2 of SELECT list contains nonaggregated column 'trendytech.students.
+student_fname'; this is incompatible with sql_mode=only_full_group_by
+
+Because our query does not  have any logic.
+
+
+SELECT student_fname from students order by years_of_exp limit 1;
++---------------+
+| student_fname |
++---------------+
+| rohit         |
++---------------+
+1 row in set (0.00 sec)
+
+The MAX() function returns the largest value of the selected column.
+
+SELECT MAX(years_of_exp) from students;
++-------------------+
+| MAX(years_of_exp) |
++-------------------+
+|                20 |
++-------------------+
+1 row in set (0.00 sec)
+
+SELECT source_of_joining,MAX(years_of_exp) from students group by source_of_joining;
+
++-------------------+-------------------+
+| source_of_joining | MAX(years_of_exp) |
++-------------------+-------------------+
+| friend            |                15 |
+| google            |                14 |
+| linknedin         |                12 |
+| quora             |                 8 |
+| youtube           |                20 |
++-------------------+-------------------+
+5 rows in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                         SUM                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The SUM() function returns the total sum of a numeric column. 
+
+SELECT SUM(column_name)
+FROM table_name
+WHERE condition;
+
+SELECT source_of_joining, sum(years_of_exp) from students GROUP BY source_of_joining;
+
++-------------------+-------------------+
+| source_of_joining | sum(years_of_exp) |
++-------------------+-------------------+
+| friend            |                15 |
+| google            |                14 |
+| linknedin         |                18 |
+| quora             |                 8 |
+| youtube           |                38 |
++-------------------+-------------------+
+5 rows in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      AVERAGE                     ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The AVG() function returns the average value of a numeric column.
+
+SELECT AVG(column_name)
+FROM table_name
+WHERE condition;
+
+SELECT source_of_joining, avg(years_of_exp) from students GROUP BY source_of_joining;
+
++-------------------+-------------------+
+| source_of_joining | avg(years_of_exp) |
++-------------------+-------------------+
+| friend            |           15.0000 |
+| google            |           14.0000 |
+| linknedin         |            9.0000 |
+| quora             |            8.0000 |
+| youtube           |           19.0000 |
++-------------------+-------------------+
+5 rows in set (0.00 sec)
+
+
+SELECT student_company, avg(years_of_exp) from students GROUP BY student_company;
++-----------------+-------------------+
+| student_company | avg(years_of_exp) |
++-----------------+-------------------+
+| google          |           12.0000 |
+| microsoft       |           15.0000 |
+| tcs             |           18.0000 |
+| walmart         |            7.0000 |
+| wipro           |           17.0000 |
++-----------------+-------------------+
+5 rows in set (0.00 sec)
+
+
+Now I want my course_duration_months to support decimal data.(currenetly it will round off)
+
+CREATE TABLE courses_new(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months DECIMAL(3,1) NOT NULL,
+    course_fee INT NOT NULL,
+    PRIMARY KEY(course_id)
+);
+Query OK, 0 rows affected (0.08 sec)
+
+DECIMAL(3,1) means I can store 3 digits in total number and 1 value after decimal. 
+
+
+insert into courses_new values (1,'big data',6.5,50000);
+insert into courses_new values (2,'web development',3.5,20000);
+insert into courses_new values (3,'data science',6,40000);
+
+Query OK, 1 row affected (0.06 sec)
+
++-----------+-----------------+------------------------+------------+
+| course_id | course_name     | course_duration_months | course_fee |
++-----------+-----------------+------------------------+------------+
+|         1 | big data        |                    6.5 |      50000 |
+|         2 | web development |                    3.5 |      20000 |
+|         3 | data science    |                    6.0 |      40000 |
++-----------+-----------------+------------------------+------------+
+2 rows in set (0.00 sec)
+
+UPDATE courses_new set course_fee=40000 where course_id=2;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+mysql> select* from courses_new;
++-----------+-----------------+------------------------+------------+
+| course_id | course_name     | course_duration_months | course_fee |
++-----------+-----------------+------------------------+------------+
+|         1 | big data        |                    6.5 |      50000 |
+|         2 | web development |                    3.5 |      40000 |
+|         3 | data science    |                    6.0 |      40000 |
++-----------+-----------------+------------------------+------------+
+3 rows in set (0.00 sec)
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                    GROUP BY                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The GROUP BY statement is often used with aggregate functions (COUNT(), MAX(), MIN(), SUM(), AVG()) 
+to group the result-set by one or more columns.
+
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+GROUP BY column_name(s)
+ORDER BY column_name(s);
+
+If you are having something as your grouping column, that should always be present in your select;
+Used to group some data based on some logic.
+
+Need of group by?
+TO do something later,like aggregate functions. 
+
+How to write query for count of  people who joined my course through linkedin,google,quora ?
+
+linkedin-5
+google-2
+quora-1
+
+SELECT source_of_joining, count(*) from students GROUP BY source_of_joining;
++-------------------+----------+
+| source_of_joining | count(*) |
++-------------------+----------+
+| friend            |        1 |
+| google            |        1 |
+| linknedin         |        2 |
+| quora             |        1 |
+| youtube           |        2 |
++-------------------+----------+
+5 rows in set (0.00 sec)
+
+
+SELECT source_of_joining, count(*) from students (error)
+ERROR 1140 (42000): In aggregated query without GROUP BY, expression #1 of SELECT list contains nonaggregated column 'trendytech.students.source_of_joining';
+this is incompatible with sql_mode=only_full_group_by.
+
+
+SELECT location,count(*) FROM students GROUP BY location;
+
++-----------+----------+
+| location  | count(*) |
++-----------+----------+
+| bangalore |        2 |
+| chennai   |        2 |
+| pune      |        3 |
++-----------+----------+
+3 rows in set (0.00 sec)
+
+
+
+--Now I want to GROUP on basis of location and source_of_joining.
+
+SELECT location,source_of_joining,count(*) FROM students GROUP BY location,source_of_joining;
++-----------+-------------------+----------+
+| location  | source_of_joining | count(*) |
++-----------+-------------------+----------+
+| bangalore | linknedin         |        2 |
+| chennai   | google            |        1 |
+| chennai   | quora             |        1 |
+| pune      | friend            |        1 |
+| pune      | youtube           |        2 |
++-----------+-------------------+----------+
+5 rows in set (0.00 sec)
+
+
+--Now I want to find for each course how many people have joined.
+
+mysql> SELECT selected_course,count(*) FROM students GROUP BY selected_course;
++-----------------+----------+
+| selected_course | count(*) |
++-----------------+----------+
+|               1 |        5 |
+|               2 |        1 |
+|               3 |        1 |
++-----------------+----------+
+3 rows in set (0.00 sec)
+
+
+--Now I want to know on which date how many number of courses of diffrent course_id are sold.
+
+mysql> select batch_date,selected_course from students;
++------------+-----------------+
+| batch_date | selected_course |
++------------+-----------------+
+| 5-02-2021  |               2 |
+| 12-02-2021 |               1 |
+| 19-02-2021 |               3 |
+| 5-02-2021  |               1 |
+| 5-02-2021  |               1 |
+| 19-02-2021 |               1 |
+| 19-02-2021 |               1 |
++------------+-----------------+
+7 rows in set (0.00 sec)
+
+mysql> select batch_date,selected_course,count(*) from students GROUP BY batch_date,selected_course;
+
++------------+-----------------+----------+
+| batch_date | selected_course | count(*) |
++------------+-----------------+----------+
+| 12-02-2021 |               1 |        1 |
+| 19-02-2021 |               1 |        2 |
+| 19-02-2021 |               3 |        1 |
+| 5-02-2021  |               1 |        2 |
+| 5-02-2021  |               2 |        1 |
++------------+-----------------+----------+
+5 rows in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++               Having vs Where                    ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The HAVING clause was added to SQL because the WHERE keyword cannot be used with aggregate functions.
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+GROUP BY column_name(s)
+HAVING condition
+ORDER BY column_name(s)
+
+
+I want to get no of students from source_of_joining table.
+select source_of_joining,count(*) from students group by source_of_joining;
+
++-------------------+----------+
+| source_of_joining | count(*) |
++-------------------+----------+
+| friend            |        1 |
+| google            |        1 |
+| linknedin         |        2 |
+| quora             |        1 |
+| youtube           |        2 |
++-------------------+----------+
+5 rows in set (0.00 sec)
+
+--I want to display where more than 1 person has registered.
+
+select source_of_joining,count(*) from students group by source_of_joining where total>1;
+
+error, as where clause is used to filter data before aggregation.
+WE can use having(it is used ot filter records after grouping has happned)
+
+select source_of_joining,count(*) as total from students group by source_of_joining having total>1;
++-------------------+-------+
+| source_of_joining | total |
++-------------------+-------+
+| linknedin         |     2 |
+| youtube           |     2 |
++-------------------+-------+
+2 rows in set (0.00 sec)
+
+where is used before to select data before the aggregation and having is used after the aggregation.
+
+select source_of_joining,count(*) as total from students group by source_of_joining having source_of_joining='linknedin;
++-------------------+-------+
+| source_of_joining | total |
++-------------------+-------+
+| linknedin         |     2 |
++-------------------+-------+
+1 row in set (0.00 sec)
+where will give error.
+
+
+
+It could be better if we do this way
+(i am filtering individual records before even doing complex work like aggregation)
+select source_of_joining,count(*) as total from students where source_of_joining='linknedin group by source_of_joining;
+
+
+mysql> select source_of_joining,count(*) as total from students where source_of_joining='linknedin' group by source_of_joining;
++-------------------+-------+
+| source_of_joining | total |
++-------------------+-------+
+| linknedin         |     2 |
++-------------------+-------+
+1 row in set (0.00 sec)
+
+
+(more performant)
+
+Can we use where and having in same query?
+I want to know location from which 1 students have joined and students experience is > 10.
+
+select location,count(*) as total from students where years_of_exp>10 group by location having total>1;
+thought process should be do filtering as early as possible. 
+
+
++----------+-------+
+| location | total |
++----------+-------+
+| pune     |     3 |
++----------+-------+
+1 row in set (0.00 sec)

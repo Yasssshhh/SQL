@@ -1,0 +1,380 @@
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                 Goorm IDE                        ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mysql-ctl cli 
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+
+CREATE DATABASE Workflow;
+
+Query OK, 1 row affected (0.00 sec)
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| workflow           |
++--------------------+
+
+mysql> use workflow;
+Database changed
+
+---To See you current database---
+mysql> SELECT database();
++------------+
+| database() |
++------------+
+| workflow   |
++------------+
+1 row in set (0.00 sec)
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                     CRUD                         ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATE command is used to create structure of Database.
+
+CREATE TABLE table_name (
+    column1 datatype constraint,
+    column2 datatype constraint,
+    column3 datatype constraint,
+    ....
+);
+
+CREATE TABLE employee(
+     firstname varchar(20) ,
+     middlename varchar(20),
+     lastname varchar(20),
+     age int,
+     salary int,
+     location varchar(20)
+);
+
+mysql> describe employee;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| firstname  | varchar(20) | YES  |     | NULL    |       |
+| middlename | varchar(20) | YES  |     | NULL    |       |
+| lastname   | varchar(20) | YES  |     | NULL    |       |
+| age        | int(11)     | YES  |     | NULL    |       |
+| salary     | int(11)     | YES  |     | NULL    |       |
+| location   | varchar(20) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> DROP TABLE employee;
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> show tables;
+Empty set (0.00 sec)
+
+mysql> DROP DATABASE  workflow;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> SELECT database();
++------------+
+| database() |
++------------+
+| NULL       |
++------------+
+1 row in set (0.00 sec)
+
+mysql>CREATE DATABASE trendytech;
+Query OK, 0 rows affected (0.00 sec)
+
+ CREATE TABLE trendytech.employee(
+
+     firstname varchar(20) NOT NULL,
+     middlename varchar(20),
+     lastname varchar(20),
+     age int not null,
+     salary int,
+     location varchar(20) NOT NULL
+);
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                   SELECT                         ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Select is used to select specific columns from a table.
+SELECT column1, column2, ...
+FROM table_name;
+
+To select all fields avaiable in the table.
+SELECT*FROM employee;
+
+mysql> INSERT INTO employee(firstname,middlename,lastname,age,salary,location) VALUES('Kapil','Kumar','sharma',21,12000,'Banglore');
+Query OK, 1 row affected (0.02 sec)
+
+
+mysql> SELECT*FROM employee;
++-----------+------------+----------+------+--------+----------+
+| firstname | middlename | lastname | age  | salary | location |
++-----------+------------+----------+------+--------+----------+
+| Kapil     | Kumar      | sharma   |   21 |  12000 | Banglore |
++-----------+------------+----------+------+--------+----------+
+1 row in set (0.00 sec)
+
+---Note---
+If you are adding values for all the columns of the table, you do not need to specify the column names in the SQL query. 
+However, make sure the order of the values is in the same order as the columns in the table.
+
+mysql> INSERT INTO employee VALUES('Kapil','Kumar','sharma',21,12000,'Banglore');
+
+What if someone dosent have a middlename?
+Buy first method you can simply skip the middlename,but here you cannot skip it as you are not defining anything.(ERROR will be thrown).
+
+---Note---
+-- 'rajes'h' - error;
+-- "rajes'h" - works;
+-- 'rajes\'h' -works;
+
+We can add more value if we want with the help of comma.
+
+mysql> INSERT INTO employee(firstname,middlename,lastname,age,salary,location) VALUES('Kapil','Kumar','sharma',21,12000,'Banglore'),
+('Kushager','Kumar','Singh',23,129000,'Delhi');
+
+---Note--
+You cannot give value greater than specified like firstname cannot be greater than 20.
+else you will get error.
+
+NOT NULL!
+If you want important values to be not null ,you can use NOT NULL keyword. 
+
+ CREATE TABLE employee(
+     firstname varchar(20) NOT NULL,
+     middlename varchar(20),
+     lastname varchar(20),
+     age int not null,
+     salary int,
+     location varchar(20) NOT NULL
+);
+
+
+INSERT INTO employee(firstname,lastname,age,salary,location) VALUES('Yash',"Pathak",21,1200000,'Banglore'),('honey','singh',
+1000000,'noida');
+
+mysql> select* from employee;
++-----------+------------+----------+-----+---------+----------+
+| firstname | middlename | lastname | age | salary  | location |
++-----------+------------+----------+-----+---------+----------+
+| Yash      | NULL       | Pathak   |  21 | 1200000 | Banglore |
+| honey     | NULL       | singh    |  22 | 1000000 | noida    |
++-----------+------------+----------+-----+---------+----------+
+
+DEFAULT!
+
+Suppose there are majority of people from banglore only then you can make location as default so that even a employee forgets to fill
+his location it is banglore by default. 
+
+ CREATE TABLE employee(
+     firstname varchar(20) NOT NULL,
+     middlename varchar(20),
+     lastname varchar(20),
+     age int NOT NULL,
+     salary int,
+     location varchar(20) DEFAULT 'banglore'
+);
+
+
+mysql> drop database trendy;
+Query OK, 1 row affected (0.06 sec)
+
+mysql> create database trendytech;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use trendytech;
+Database changed
+
+CREATE TABLE employee(
+     
+     id INT PRIMARY KEY,
+     firstname varchar(20) NOT NULL,
+     middlename varchar(20),
+     lastname varchar(20) NOT NULL,
+     age int NOT NULL,
+     salary INT NOT NULL,
+     location varchar(20) NOT NULL DEFAULT 'banglore'
+);
+
+mysql> desc employee;
++------------+-------------+------+-----+----------+-------+
+| Field      | Type        | Null | Key | Default  | Extra |
++------------+-------------+------+-----+----------+-------+
+| id         | int(11)     | NO   | PRI | NULL     |       |
+| firstname  | varchar(20) | NO   |     | NULL     |       |
+| middlename | varchar(20) | YES  |     | NULL     |       |
+| lastname   | varchar(20) | NO   |     | NULL     |       |
+| age        | int(11)     | NO   |     | NULL     |       |
+| salary     | int(11)     | NO   |     | NULL     |       |
+| location   | varchar(20) | NO   |     | banglore |       |
++------------+-------------+------+-----+----------+-------+
+
+
+INSERT INTO employee(id,firstname,lastname,age,salary) VALUES(1,'rajesh','sharma',28,1000);
+INSERT INTO employee(id,firstname,lastname,age,salary) VALUES(2,'kapil','sharma',30,2000);
+INSERT INTO employee(id,firstname,lastname,age,salary) VALUES(3,'Maneesh','sharma',32,3000);
+
+
+---Select all colunns---
+mysql> select* from employee;
++----+-----------+------------+----------+-----+--------+----------+
+| id | firstname | middlename | lastname | age | salary | location |
++----+-----------+------------+----------+-----+--------+----------+
+|  1 | rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
+|  2 | kapil     | NULL       | sharma   |  30 |   2000 | banglore |
+|  3 | Maneesh   | NULL       | sharma   |  32 |   3000 | banglore |
++----+-----------+------------+----------+-----+--------+----------+
+
+---Selecting some columns---
+SELECT firstname,lastname from employee;
+
+mysql> SELECT firstname,lastname from employee;
++-----------+----------+
+| firstname | lastname |
++-----------+----------+
+| rajesh    | sharma   |
+| kapil     | sharma   |
+| Maneesh   | sharma   |
++-----------+----------+
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      WHERE                       ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The WHERE clause is used to filter records. It is used to extract only those records that fulfill a specified condition.
+The WHERE clause is not only used in SELECT statements, it is also used in UPDATE, DELETE, etc.
+
+
+mysql> SELECT*FROM employee WHERE firstname='maneesh';
++----+-----------+------------+----------+-----+--------+----------+
+| id | firstname | middlename | lastname | age | salary | location |
++----+-----------+------------+----------+-----+--------+----------+
+|  3 | Maneesh   | NULL       | sharma   |  32 |   3000 | banglore |
++----+-----------+------------+----------+-----+--------+----------+
+
+(where caluse is not sensitive because we have given firstname as maneesh but in table it is Maneesh).
+
+TO make where clause case sensitive, we can use keyword binary.
+
+mysql> SELECT*FROM employee WHERE binary firstname='maneesh';
+Empty set (0.00 sec)
+
+--Text Fields vs. Numeric Fields--
+SQL requires single quotes around text values (most database systems will also allow double quotes).
+However, numeric fields should not be enclosed in quotes:
+
+Example
+SELECT * FROM Customers
+WHERE CustomerID=1;
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      UPDATE                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Be careful when updating records in a table! Notice the WHERE clause in the UPDATE statement. The WHERE clause specifies which 
+record(s) that should be updated. If you omit the WHERE clause, all records in the table will be updated!
+It is the WHERE clause that determines how many records will be updated.
+
+
+mysql> select* from employee;
++----+-----------+------------+----------+-----+--------+----------+
+| id | firstname | middlename | lastname | age | salary | location |
++----+-----------+------------+----------+-----+--------+----------+
+|  1 | rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
+|  2 | kapil     | NULL       | sharma   |  30 |   2000 | banglore |
+|  3 | Maneesh   | NULL       | sharma   |  32 |   3000 | banglore |
++----+-----------+------------+----------+-----+--------+----------+
+
+---Updating a specific record---
+UPDATE employee SET lastname='sinha' WHERE firstname='maneesh';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+mysql> SELECT*from employee;
++----+-----------+------------+----------+-----+--------+----------+
+| id | firstname | middlename | lastname | age | salary | location |
++----+-----------+------------+----------+-----+--------+----------+
+|  1 | rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
+|  2 | kapil     | NULL       | sharma   |  30 |   2000 | banglore |
+|  3 | Maneesh   | NULL       | sinha    |  32 |   3000 | banglore |
++----+-----------+------------+----------+-----+--------+----------+
+3 rows in set (0.00 sec)
+
+UPDATE employee SET location='delhi' WHERE firstname='kapil';
+
+mysql> SELECT*from employee;
++----+-----------+------------+----------+-----+--------+----------+
+| id | firstname | middlename | lastname | age | salary | location |
++----+-----------+------------+----------+-----+--------+----------+
+|  1 | rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
+|  2 | kapil     | NULL       | sharma   |  30 |   2000 | delhi    |
+|  3 | Maneesh   | NULL       | sinha    |  32 |   3000 | banglore |
++----+-----------+------------+----------+-----+--------+----------+
+
+UPDATE employee SET location='delhi';
+It will update entire table by matching all records as there is no where clause.
+
+UPDATE employee SET salary=salary+5000;
+mysql> SELECT*from employee;
++----+-----------+------------+----------+-----+--------+----------+
+| id | firstname | middlename | lastname | age | salary | location |
++----+-----------+------------+----------+-----+--------+----------+
+|  1 | rajesh    | NULL       | sharma   |  28 |   6000 | banglore |
+|  2 | kapil     | NULL       | sharma   |  30 |   7000 | delhi    |
+|  3 | Maneesh   | NULL       | sinha    |  32 |   8000 | banglore |
++----+-----------+------------+----------+-----+--------+----------+
+
+
+---Use of logical and ,or operator---
+
+UPDATE employee SET location='bombay' where firstname='maneesh' and lastname='sinha';
+
+mysql> SELECT*from employee;
++----+-----------+------------+----------+-----+--------+----------+
+| id | firstname | middlename | lastname | age | salary | location |
++----+-----------+------------+----------+-----+--------+----------+
+|  1 | rajesh    | NULL       | sharma   |  28 |   6000 | banglore |
+|  2 | kapil     | NULL       | sharma   |  30 |   7000 | delhi    |
+|  3 | Maneesh   | NULL       | sinha    |  32 |   8000 | bombay   |
++----+-----------+------------+----------+-----+--------+----------+
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      DELETE                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The DELETE statement is used to delete existing records in a table.
+DELETE FROM table_name WHERE condition;
+
+
+DELETE from employee WHERE id=3;
+Query OK, 1 row affected (0.09 sec)
+
+mysql> SELECT*from employee;
++----+-----------+------------+----------+-----+--------+----------+
+| id | firstname | middlename | lastname | age | salary | location |
++----+-----------+------------+----------+-----+--------+----------+
+|  1 | rajesh    | NULL       | sharma   |  28 |   6000 | banglore |
+|  2 | kapil     | NULL       | sharma   |  30 |   7000 | delhi    |
++----+-----------+------------+----------+-----+--------+----------+
+2 rows in set (0.00 sec)
+
+---All rows will be deleted if where condition is not specfied---
+DELETE from employee.

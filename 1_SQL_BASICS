@@ -1,0 +1,207 @@
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      SQL                         ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Data is a collection of a distinct small unit of Information. It can be used in a variety of forms like text,
+numbers, media, bytes, etc.
+
+A Database is an organized collection of Data, so that it can be easily accessed and managed.
+
+MySQL is a relational Database which holds the Data and SQL is a Programming Language designed for working with 
+Database to create, manipulate, share/access.
+
+RDBMS:
+RDBMS is the basis for SQL, the data in RDBMS is stored in Database objects called Tables. A table is a collection 
+of related data entries and it consists of columns and rows.
+
+
+MySQL Data Types (Version 8.0)
+In MySQL there are three main data types: string, numeric, and date and time.
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++              String Datatypes                    ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-CHAR(size)	
+A FIXED length string (can contain letters, numbers, and special characters). 
+The size parameter specifies the column length in characters - can be from 0 to 255. Default is 1.
+
+-VARCHAR(size)	
+A VARIABLE length string (can contain letters, numbers, and special characters). 
+The size parameter specifies the maximum string length in characters - can be from 0 to 65535.
+
+-BINARY(size)	
+Equal to CHAR(), but stores binary byte strings. The size parameter specifies the column length in bytes. Default is 1.
+
+-TEXT(size)	
+Holds a string with a maximum length of 65,535 bytes.
+
+-ENUM(val1, val2, val3, ...)	
+A string object that can have only one value, chosen from a list of possible values. 
+You can list up to 65535 values in an ENUM list. If a value is inserted that is not in the list, a blank value will be inserted. 
+The values are sorted in the order you enter them.
+
+-SET(val1, val2, val3, ...)	
+A string object that can have 0 or more values, chosen from a list of possible values. 
+You can list up to 64 values in a SET list.
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++             Numeric Datatypes                    ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BIT(size)	
+A bit-value type. The number of bits per value is specified in size. The size parameter can hold a value from 1 to 64. 
+The default value for size is 1.
+
+TINYINT(size)	
+A very small integer. Signed range is from -128 to 127. Unsigned range is from 0 to 255. 
+The size parameter specifies the maximum display width (which is 255)
+
+BOOL/BOOLEAN	
+Zero is considered as false, nonzero values are considered as true.
+
+SMALLINT(size)	
+A small integer. Signed range is from -32768 to 32767. Unsigned range is from 0 to 65535. 
+The size parameter specifies the maximum display width (which is 255)
+
+INT(size)/INTEGER(size)    
+A medium integer. Signed range is from -2147483648 to 2147483647. Unsigned range is from 0 to 4294967295. 
+The size parameter specifies the maximum display width (which is 255)
+
+BIGINT(size)	
+A large integer. Signed range is from -9223372036854775808 to 9223372036854775807. 
+Unsigned range is from 0 to 18446744073709551615. The size parameter specifies the maximum display width (which is 255)
+
+FLOAT(p)	
+A floating point number. 
+MySQL uses the p value to determine whether to use FLOAT or DOUBLE for the resulting data type. 
+If p is from 0 to 24, the data type becomes FLOAT(). If p is from 25 to 53, the data type becomes DOUBLE()
+
+DOUBLE(size, d)	
+A normal-size floating point number. The total number of digits is specified in size. 
+The number of digits after the decimal point is specified in the d parameter
+ 
+DECIMAL(size, d)/DEC(size, d)	
+An exact fixed-point number.The total number of digits is specified in size. 
+The number of digits after the decimal point is specified in the d parameter. The maximum number for size is 65. 
+The maximum number for d is 30. The default value for size is 10. The default value for d is 0.
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++           Date & Time Datatypes                  ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-DATE 
+Format: YYYY-MM-DD. The supported range is from '1000-01-01' to '9999-12-31'
+
+-DATETIME(fsp)	
+A date and time combination. 
+Format: YYYY-MM-DD hh:mm:ss. The supported range is from '1000-01-01 00:00:00' to '9999-12-31 23:59:59'.
+Adding DEFAULT and ON UPDATE in the column definition to get automatic initialization and updating to the current date and time.
+
+-TIMESTAMP(fsp)	
+TIMESTAMP values are stored as the number of seconds since the Unix epoch ('1970-01-01 00:00:00' UTC). 
+Format: YYYY-MM-DD hh:mm:ss. The supported range is from '1970-01-01 00:00:01' UTC to '2038-01-09 03:14:07' UTC. 
+Automatic initialization and updating to the current date and time can be specified using DEFAULT CURRENT_TIMESTAMP and ON UPDATE CURRENT_TIMESTAMP in the column definition
+
+-TIME(fsp)	
+A time. Format: hh:mm:ss. The supported range is from '-838:59:59' to '838:59:59'
+
+-YEAR	
+A year in four-digit format. Values allowed in four-digit format: 1901 to 2155, and 0000.
+MySQL 8.0 does not support year in two-digit format
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++              SQL CONSTRAINT                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+SQL constraints are used to specify rules for the data in a table.
+Constraint are used to limit type of data that can go into a table.
+This ensures the accuracy and reliability of data is maintained.
+If there is any voilation then action is aborted.
+
+
+NOT NULL: Ensures that column do not have a null value.
+UNIQUE: Ensures that all values in a column are diffrent.
+DEFAULT: Provides a default value for a column when none is specified.
+PRIMARY: Identifies each row/record in database table uniquely.
+CHECK: Ensures all values in a column satisfy certain conditions.
+CREATE INDEX: Creates and Retrieves data from database very quickly.
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                PARTS OF SQL                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-DDL(Data Defination Language)
+
+Provides commands for defining a database structure / relation schema, deleting relations and modifying 
+realational schemas.
+
+Create, Alter, Drop ,Truncate, Rename.
+
+*DROP command is used to remove the whole database or table indexes, data, and more. Whereas the TRUNCATE 
+command is used to remove all the rows from the table.
+
+-DML(Data Manipulation Language)
+
+Provides ability to Query information from database and Insert tuples, delete tuples and modify tuples in database.
+INSERT,DELETE,UPDATE.
+
+-TCL(Transaction Control Language)
+
+Commands for specifing begning and ending of Transaction.
+Commit, Rollback (Restores database to original state since last commit ), SavePoint(Identifies a point in a Transaction, 
+to which you can Rollback later).
+ 
+
+-DCL(Data Control Language)
+
+Mainly deals with rights and permissions in database system.(Used to give/take back Authority)
+GRANT, REVOKE.
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++           SQL STRING FUNCTIONS                   ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+ASCII	               Returns the ASCII value for the specific character
+CHAR_LENGTH	           Returns the length of a string (in characters)
+CHARACTER_LENGTH	   Returns the length of a string (in characters)
+
+CONCAT	               Adds two or more expressions together
+FIELD	               Returns the index position of a value in a list of values
+INSERT	               Inserts a string within a string at the specified position and for a certain number of characters
+INSTR	               Returns the position of the first occurrence of a string in another string
+
+LEFT	               Extracts a number of characters from a string (starting from left)
+LENGTH	               Returns the length of a string (in bytes)
+LOCATE	               Returns the position of the first occurrence of a substring in a string
+
+LPAD	               Left-pads a string with another string, to a certain length
+LTRIM	               Removes leading spaces from a string
+MID	                   Extracts a substring from a string (starting at any position)
+POSITION	           Returns the position of the first occurrence of a substring in a string
+REPEAT	               Repeats a string as many times as specified
+REPLACE	               Replaces all occurrences of a substring within a string, with a new substring
+REVERSE	               Reverses a string and returns the result
+RIGHT	               Extracts a number of characters from a string (starting from right)
+RPAD	               Right-pads a string with another string, to a certain length
+RTRIM	               Removes trailing spaces from a string
+SPACE	               Returns a string of the specified number of space characters
+STRCMP	               Compares two strings
+
+LOWER/LCASE            Converts a string to lower-case
+SUBSTR/SUBSTRING       Extracts a substring from a string (starting at any position)
+TRIM	               Removes leading and trailing spaces from a string
+UPPER/UCASE	           Converts a string to upper-case
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++               SQL OPERATORS                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Logical: AND, OR, NOT
+Comparison: =,>,<,>=,<=,!= or <>
+Special: BETWEEN, LIKE, ISNULL, IN, DISTINCT
+Aggregation: AVG(), MIN(), MAX(), COUNT(), SUM()

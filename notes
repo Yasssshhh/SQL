@@ -1,0 +1,161 @@
+A record, is also called a row.
+Every table is broken up into smaller entities called fields(CustomerID, CustomerName, ContactName). A field is a column in a table that is designed to maintain specific information about every record in the table.
+
+A column is a vertical entity in a table that contains all information associated with a specific field in a table.
+
+Semicolon is the standard way to separate each SQL statement in database systems that allow more than one SQL statement to be executed in the same call to the server.
+
+SELECT COUNT(DISTINCT Country) FROM Customers;
+
+SELECT * FROM Customers
+WHERE NOT Country='Germany' AND NOT Country='UK' AND NOT Country='Mexico';
+
+SELECT * FROM Customers
+WHERE NOT Country='Germany' AND NOT Country='UK' AND NOT Country='MEXICO'; (wrong)
+
+SELECT * FROM Customers
+WHERE Country='Germany' AND (City='Berlin' OR City='München');
+
+The ORDER BY keyword sorts the records in ascending order by default. To sort the records in descending order, use the DESC keyword.
+SELECT column1, column2, ...
+FROM table_name
+ORDER BY column1, column2, ... ASC|DESC;
+
+ORDER BY Several Columns Example
+The following SQL statement selects all customers from the "Customers" table, sorted by the "Country" and the "CustomerName" column. This means that it orders by Country, but if some rows have the same Country, it orders them by CustomerName:
+
+Example
+SELECT * FROM Customers
+ORDER BY Country, CustomerName;
+
+SELECT * FROM Customers
+ORDER BY Country ASC, CustomerName DESC;
+
+A NULL value is different from a zero value or a field that contains spaces. A field with a NULL value is one that has been left blank during record creation!
+SELECT column_names
+FROM table_name
+WHERE column_name IS NULL;
+
+SELECT column_names
+FROM table_name
+WHERE column_name IS NOT NULL;
+
+
+
+MySQL
+
+The MySQL IFNULL() function lets you return an alternative value if an expression is NULL:
+
+SELECT ProductName, UnitPrice * (UnitsInStock + IFNULL(UnitsOnOrder, 0))
+FROM Products;
+or we can use the COALESCE() function, like this:
+
+SELECT ProductName, UnitPrice * (UnitsInStock + COALESCE(UnitsOnOrder, 0))
+FROM Products;
+
+
+
+To let the AUTO_INCREMENT sequence start with another value, use the following SQL statement:
+
+ALTER TABLE Persons AUTO_INCREMENT=100;
+
+ 
+Now we will see why this query is failing.
+
+SELECT DISTINCT source_of_joining FROM students ORDER BY enrollment_date DESC LIMIT 5;
+
+ERROR 3065 (HY000): Expression #1 of ORDER BY clause is not in SELECT list, references column 'trendytech.students.enrollment_date' 
+which is not in SELECT list; this is incompatible
+with DISTINCT
+
+DISTINCT & ORDER BY
+
+SELECT source_of_joining FROM students;
+order of execution: 
+1:FROM (Loading to table)
+
+2:SELECT(Projecting source_of_joining)
+
+
+SELECT source_of_joining FROM students ORDER BY enrollment_date;
+
+order of execution:
+1:FROM
+select*from students;
+
+
+---System will keep enrollment_date in 2 process because it can perform order by---
+
+2:SELECT(Projecting source_of_joining,enrollment_date)
+select source_of_joining,enrollment_date from students;
+
+3:ORDER BY(based on enrollment_date it will order by)
+select source_of_joining from students order by enrollment_date.
+
+
+---So this query will work---
+
+---Why is this not working---
+SELECT DISTINCT source_of_joining FROM students ORDER BY enrollment_date DESC LIMIT 5;
+
+
+order of execution:
+1:FROM(Loading Table)
+select*from students;
+
+
+---System will keep enrollment_date in 2 process because it can perform order by---
+
+2:SELECT(Projecting source_of_joining,enrollment_date)
+select source_of_joining,enrollment_date from students;
+
+
+--Distinct will happen on both source_of_joining and enrollment_date which is logically not giving op we want---
+3:DISTINCT
+Select distinct source_of_joining from students; (this will work but below query is fired)
+
++-------------------+
+| source_of_joining |
++-------------------+
+| linknedin         |
+| quora             |
+| friend            |
+| youtube           |
+| google            |
++-------------------+
+5 rows in set (0.10 sec)
+
+Select distinct source_of_joining,enrollment_date from students;
+
++-------------------+---------------------+
+| source_of_joining | enrollment_date     |
++-------------------+---------------------+
+| linknedin         | 2022-09-12 11:59:51 |
+| google            | 2022-09-12 11:59:52 |
+| quora             | 2022-09-12 11:59:51 |
+| friend            | 2022-09-12 11:59:52 |
+| youtube           | 2022-09-12 11:59:52 |
+| google            | 2022-09-12 11:59:52 |
++-------------------+---------------------+
+
+see we are getting diffrent column no.(logically we are gone wrong so rather than giving wrong ans,system throws error).
+
+4:ORDER BY(based on enrollment_date it will order by)
+select source_of_joining from students order by enrollment_date
+
+The CHECK constraint is used to limit the value range that can be placed in a column.
+
+If you define a CHECK constraint on a column it will allow only certain values for this column.
+
+If you define a CHECK constraint on a table it can limit the values in certain columns based on values in other columns in the row.
+
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    CHECK (Age>=18)
+);
+
+ALTER TABLE Persons
+DROP CHECK CHK_PersonAge;

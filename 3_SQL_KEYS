@@ -1,0 +1,405 @@
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      PRIMARY KEY                 ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-The PRIMARY KEY constraint uniquely identifies each record in a table.
+-Primary keys must contain UNIQUE values, and cannot contain NULL values.
+-A table can have only ONE primary key; and in the table, this primary key can consist of single or multiple columns (fields).
+
+
+--This type of records can create problems.
+INSERT INTO employee(firstname,lastname,age,salary) VALUES('rajesh','sharma',28,1000),('rajesh','sharma',28,1000);
+
+mysql> SELECT * from employee;
++-----------+------------+----------+-----+--------+----------+
+| firstname | middlename | lastname | age | salary | location |
++-----------+------------+----------+-----+--------+----------+
+| rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
+| rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
++-----------+------------+----------+-----+--------+----------+
+
+
+mysql> drop table employee;
+Query OK, 0 rows affected (0.04 sec)
+
+
+Lets create a primay key to achieve what we want.
+ 
+ CREATE TABLE employee
+     (
+     id INT PRIMARY KEY,
+     firstname varchar(20) NOT NULL,
+     middlename varchar(20),
+     lastname varchar(20),
+     age int NOT NULL,
+     salary int,
+     location varchar(20) DEFAULT 'banglore'
+     );
+
+     
+mysql> desc employee;
++------------+-------------+------+-----+----------+-------+
+| Field      | Type        | Null | Key | Default  | Extra |
++------------+-------------+------+-----+----------+-------+
+| id         | int(11)     | NO   | PRI | NULL     |       |
+| firstname  | varchar(20) | NO   |     | NULL     |       |
+| middlename | varchar(20) | YES  |     | NULL     |       |
+| lastname   | varchar(20) | YES  |     | NULL     |       |
+| age        | int(11)     | NO   |     | NULL     |       |
+| salary     | int(11)     | YES  |     | NULL     |       |
+| location   | varchar(20) | YES  |     | banglore |       |
++------------+-------------+------+-----+----------+-------+
+
+Now you cannot give same value to parameter which is a primary key.
+
+INSERT INTO employee(id,firstname,lastname,age,salary) VALUES(1,'rajesh','sharma',28,1000),(1,'rajesh','sharma',28,1000);
+ERROR 1062 (23000): Duplicate entry '1' for key 'PRIMARY'
+
+     
+INSERT INTO employee(id,firstname,lastname,age,salary) VALUES(1,'rajesh','sharma',28,1000),(2,'rajesh','sharma',28,1000);
+
+mysql> SELECT*from employee;
++----+-----------+------------+----------+-----+--------+----------+
+| id | firstname | middlename | lastname | age | salary | location |
++----+-----------+------------+----------+-----+--------+----------+
+|  1 | rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
+|  2 | rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
++----+-----------+------------+----------+-----+--------+----------+
+
+
+INSERT INTO employee(id,firstname,lastname,age,salary) VALUES(NULL,'rajesh','sharma',28,1000);
+ERROR 1048 (23000): Column 'id' cannot be null
+
+--A value will be a good candidate for primary key on basis of which you want to uniquely identify something.(curtomerID,RollNo,ID);
+
+Another way of creating a primary Key.
+
+CREATE TABLE employee(
+     id INT,
+     firstname varchar(20) NOT NULL,
+     middlename varchar(20),
+     lastname varchar(20),
+     age int NOT NULL,
+     salary int,
+     location varchar(20) DEFAULT 'banglore',
+     PRIMARY KEY(id)
+);
+
+---Concatination of cokumns---
+PRIMARY KEY(id,age);
+
+Using AUTO INCREMENT.(Very good candidate for primary key)
+Suppose you have 10 employees and you want to give 11 id to new employee. Remembering this can be trippy so we can take help of auto increment.
+
+mysql> drop table employee;
+Query OK, 0 rows affected (0.04 sec)
+
+CREATE TABLE employee
+     (
+     id INT AUTO_INCREMENT,
+     firstname varchar(20) NOT NULL,
+     middlename varchar(20),
+     lastname varchar(20),
+     age int NOT NULL,
+     salary int,
+     location varchar(20) DEFAULT 'banglore',
+     PRIMARY KEY(id)
+     );
+
+mysql> desc employee;
++------------+-------------+------+-----+----------+----------------+
+| Field      | Type        | Null | Key | Default  | Extra          |
++------------+-------------+------+-----+----------+----------------+
+| id         | int(11)     | NO   | PRI | NULL     | auto_increment |
+| firstname  | varchar(20) | NO   |     | NULL     |                |
+| middlename | varchar(20) | YES  |     | NULL     |                |
+| lastname   | varchar(20) | YES  |     | NULL     |                |
+| age        | int(11)     | NO   |     | NULL     |                |
+| salary     | int(11)     | YES  |     | NULL     |                |
+| location   | varchar(20) | YES  |     | banglore |                |
++------------+-------------+------+-----+----------+----------------+
+
+INSERT INTO employee(firstname,lastname,age,salary) VALUES('rajesh','sharma',28,1000),('rajesh','sharma',28,1000),
+('Himanshu','Honey',25,2000),('Yaman','Saini',20,12000);
+
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+
+mysql> select* from employee;
++----+-----------+------------+----------+-----+--------+----------+
+| id | firstname | middlename | lastname | age | salary | location |
++----+-----------+------------+----------+-----+--------+----------+
+|  1 | rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
+|  2 | rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
+|  3 | Himanshu  | NULL       | Honey    |  25 |   2000 | banglore |
+|  4 | Yaman     | NULL       | Saini    |  20 |  12000 | banglore |
++----+-----------+------------+----------+-----+--------+----------+
+
+You can give id if you want.
+mysql> INSERT INTO employee(id,firstname,lastname,age,salary) VALUES(6,'rajesh','sharma',28,1000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select*from employee;
++----+-----------+------------+----------+-----+--------+----------+
+| id | firstname | middlename | lastname | age | salary | location |
++----+-----------+------------+----------+-----+--------+----------+
+|  1 | rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
+|  2 | rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
+|  3 | Himanshu  | NULL       | Honey    |  25 |   2000 | banglore |
+|  4 | Yaman     | NULL       | Saini    |  20 |  12000 | banglore |
+|  6 | rajesh    | NULL       | sharma   |  28 |   1000 | banglore |
++----+-----------+------------+----------+-----+--------+----------+
+5 rows in set (0.00 sec)
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      UNIQUE KEY                  ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Unique Key: holds unique values,just like primary key.
+
+But you can have only one primary key and primary key cannot be null, but unique key can hold null value.
+(in mysql we can have any number of null but in some databases it holds only one NULL value)
+
+Primary Key vs Unique Key
+We should use Primary key when we have to uniquely identify each record and Unique key when we want our column to have unique values.
+Example: Email Id
+We do not want someone to uniquely identify by email id, but email id should be diffrent so it can be a unique key not a primary key. 
+
+CREATE TABLE employee
+     (
+     firstname varchar(20) NOT NULL,
+     lastname varchar(20) NOT NULL,
+     age int NOT NULL,
+     PRIMARY KEY(firstname,lastname)
+     );
+
+
+mysql> desc employee;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| firstname | varchar(20) | NO   | PRI | NULL    |       |
+| lastname  | varchar(20) | NO   | PRI | NULL    |       |
+| age       | int(11)     | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+
+mysql> INSERT INTO employee values('kapil','sharma',28);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO employee values('kushagaer','sharma',28);
+Query OK, 1 row affected (0.01 sec)
+
+
+---Multiple Unique Keys---
+CREATE TABLE employee
+     (
+     id INT UNIQUE KEY,
+     firstname varchar(20),
+     lastname varchar(20),
+     age int NOT NULL,
+     UNIQUE KEY(firstname,lastname)
+     );
+
+
+mysql> desc employee;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| id        | int(11)     | YES  | UNI | NULL    |       |
+| firstname | varchar(20) | YES  | MUL | NULL    |       |
+| lastname  | varchar(20) | YES  |     | NULL    |       |
+| age       | int(11)     | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+
+mysql> INSERT INTO employee values(1,'kapil','sharma',28);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO employee values(1,'kapil','sharma',28);
+ERROR 1062 (23000): Duplicate entry '1' for key 'id'
+
+INSERT INTO employee values(null,'kapil','sharma',28);
+ERROR 1062 (23000): Duplicate entry 'kapil-sharma' for key 'firstname'
+
+INSERT INTO employee values(null,'kashu','sharma',28);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select* from employee;
++------+-----------+----------+-----+
+| id   | firstname | lastname | age |
++------+-----------+----------+-----+
+|    1 | kapil     | sharma   |  28 |
+| NULL | kashu     | sharma   |  28 |
++------+-----------+----------+-----+
+2 rows in set (0.00 sec)
+
+mysql> INSERT INTO employee values(null,'kashu','sharma',28);
+ERROR 1062 (23000): Duplicate entry 'kashu-sharma' for key 'firstname'
+
+
+mysql> create database trendytech;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use trendytech;
+Database changed
+
+---Suppose in future we have some courses also for the students---
+
+CREATE TABLE courses(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months INT NOT NULL,
+    course_fee INT NOT NULL,
+    PRIMARY KEY(course_id)
+);
+
+---Seed Database Courses---
+
+insert into courses values (1,'big data',6,50000);
+insert into courses values (2,'web development',3,20000);
+insert into courses values (3,'data science',6,40000);
+insert into courses values (4,'dev ops',1,10000);
+
+
+CREATE TABLE students(
+    student_id INT AUTO_INCREMENT,
+    student_fname VARCHAR(30) NOT NULL,
+    student_lname VARCHAR(30) NOT NULL,
+    student_mname VARCHAR(30),
+    student_email VARCHAR(30) NOT NULL,
+    student_phone VARCHAR(15) NOT NULL,
+    student_alternate_phone VARCHAR(15),
+    enrollment_date TIMESTAMP NOT NULL,
+    selected_course INT NOT NULL DEFAULT 1,
+    years_of_exp INT NOT NULL,
+    student_company VARCHAR(30),
+    batch_date VARCHAR(30) NOT NULL,
+    source_of_joining VARCHAR(30) NOT NULL,
+    location VARCHAR(30) NOT NULL,
+    PRIMARY KEY(student_id),
+    UNIQUE KEY(student_email)
+);
+
+
+---Seed Data---
+
+insert into students (student_fname, student_lname, student_email, student_phone,selected_course,years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('rohit','sharma','rohit@gmail.com','9191919191',2,'walmart','5-02-2021',
+'linknedin','bangalore');
+
+insert into students (student_fname, student_lname, student_email, student_phone,selected_course, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('virat','kohli','virat@gmail.com','9292929292',3,'flipkart','5-02-2021',
+'linknedin','hyderabad');
+
+insert into students (student_fname, student_lname, student_email, student_phone, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('shikhar','dhawan','shikhar@gmail.com','9393939393',12,'google','12-02-2021',
+'linknedin','bangalore');
+
+insert into students (student_fname, student_lname, student_email, student_phone,selected_course, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('rahul','dravid','rahul@gmail.com','9494949494',3,8,'walmart','19-02-2021',
+'quora','chennai');
+
+insert into students (student_fname, student_lname, student_email, student_phone, years_of_exp, student_company, 
+batch_date, source_of_joining, location) values ('kapil','dev','kapil@gmail.com','9291292292',15,'microsoft','5-02-2021',
+'friend','pune'),
+('brain','lara','brain@gmail.com','929127292',18,'tcs','5-02-2021',
+'youtube','pune'),
+('carl','hooper','carl@gmail.com','929127392',20,'wipro','19-02-2021',
+'youtube','pune'),
+('saurabh','ganguly','saurabh@gmail.com','929127492',14,'wipro','19-02-2021',
+'google','chennai');
+
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                     FOREIGN KEY                  ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+-The FOREIGN KEY constraint is used to prevent actions that would destroy links between tables.
+-A FOREIGN KEY is a field (or collection of fields) in one table, that refers to the PRIMARY KEY in another table.
+-The table with the foreign key is called the child table, and the table with the primary key is called the referenced or parent table.
+
+We are offering 4 courses but if someone tries to enter course id 5,he can enter it which should not be accepted.
+How can someone join a course which is not avaiable, but system is taking it,and this is where foreign key comes into use.
+
+The FOREIGN KEY constraint prevents invalid data from being inserted into the foreign key column, because it has to be one of the 
+values contained in the parent table.
+
+
+mysql> drop table students;
+Query OK, 0 rows affected (0.12 sec)
+
+CREATE TABLE courses(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months INT NOT NULL,
+    course_fee INT NOT NULL,
+    PRIMARY KEY(course_id)
+);
+
+CREATE TABLE students(
+    student_id INT AUTO_INCREMENT,
+    student_fname VARCHAR(30) NOT NULL,
+    student_lname VARCHAR(30) NOT NULL,
+    student_mname VARCHAR(30),
+    student_email VARCHAR(30) NOT NULL,
+    student_phone VARCHAR(15) NOT NULL,
+    student_alternate_phone VARCHAR(15),
+    enrollment_date TIMESTAMP NOT NULL,
+    selected_course INT NOT NULL DEFAULT 1,
+    years_of_exp INT NOT NULL,
+    student_company VARCHAR(30),
+    batch_date VARCHAR(30) NOT NULL,
+    source_of_joining VARCHAR(30) NOT NULL,
+    location VARCHAR(30) NOT NULL,
+    PRIMARY KEY(student_id),
+    UNIQUE KEY(student_email),
+    FOREIGN KEY(selected_course) REFERENCES courses(course_id)
+);
+
+You cannot add foreign key on column which is not  a primary key.
+
+---selected course is dependent upon courses table courses_id column---
+---parent table is courses table as students table has dependency on that and child table is student table as it is dependent---
+
+mysql> describe students;
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+| Field                   | Type        | Null | Key | Default           | Extra                       |
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+| student_id              | int(11)     | NO   | PRI | NULL              | auto_increment              |
+| student_fname           | varchar(30) | NO   |     | NULL              |                             |
+| student_lname           | varchar(30) | NO   |     | NULL              |                             |
+| student_mname           | varchar(30) | YES  |     | NULL              |                             |
+| student_email           | varchar(30) | NO   | UNI | NULL              |                             |
+| student_phone           | varchar(15) | NO   |     | NULL              |                             |
+| student_alternate_phone | varchar(15) | YES  |     | NULL              |                             |
+| enrollment_date         | timestamp   | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+| selected_course         | int(11)     | NO   | MUL | 1                 |                             |
+| years_of_exp            | int(11)     | NO   |     | NULL              |                             |
+| student_company         | varchar(30) | YES  |     | NULL              |                             |
+| batch_date              | varchar(30) | NO   |     | NULL              |                             |
+| source_of_joining       | varchar(30) | NO   |     | NULL              |                             |
+| location                | varchar(30) | NO   |     | NULL              |                             |
++-------------------------+-------------+------+-----+-------------------+-----------------------------+
+14 rows in set (0.01 sec)
+
+
+mysql> insert into students (student_fname, student_lname, student_email, student_phone,selected_course, years_of_exp, student_company,
+    -> batch_date, source_of_joining, location) values ('jasprit','boomrah','boomboom@gmail.com','9494909404',5,12,'intuit','19-02-2021',
+    -> 'linkedin','delhi');
+
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`trendytech`.`students`, CONSTRAINT `students_ibfk_1` FOREIGN KEY (`selected_course`) REF
+ERENCES `courses` (`course_id`))
+
+What if someone wants to discontinue couse id 2(web development)?
+DELETE from courses where course_id=2;
+
+Record will be invalidated and it is also a voilation of foreign key!!!
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`trendytech`.`students`, CONSTRAINT `students_ibfk_1` FOREIGN KEY (`sele
+cted_course`) REFERENCES `courses` (`course_id`))

@@ -1,0 +1,711 @@
+INDEX COMMAND
+
+The CREATE INDEX statement is used to create indexes in tables.
+
+Indexes are used to retrieve data from the database more quickly than otherwise.
+The users cannot see the indexes, they are just used to speed up searches/queries.
+
+Note: Updating a table with indexes takes more time than updating a table without (because the indexes also need an update). 
+So, only create indexes on columns that will be frequently searched against.
+
+CREATE INDEX index_name
+ON table_name (column1, column2, ...);
+
+
+Automatically created the index for primary key and unique columns.
+Avoid columns that have too many null values.
+Small tables do no require joins
+
+SELECT*from students 
+where dob > "1000-01-01";
+
+CREATE INDEX studdob ON students (dob);
+
+DROP INDEX index_name ON table_name;
+
+                                            ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                            ++++                      ALIAS                       ++++ 
+                                            ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      
+If you want to select something as other name.(Used to give a table or a column in a table, a temporary name).
+An alias only exists for the duration of that query. An alias is created with the AS keyword.
+
+SELECT firstname as name,lastname as surname from employee;
++---------+---------+
+| name    | surname |
++---------+---------+
+| rajesh  | sharma  |
+| kapil   | sharma  |
+| Maneesh | sharma  |
++---------+---------+
+
+--If alias name contaion spaces, we need []
+SELECT CustomerName AS Customer, ContactName AS [Contact Person]
+FROM Customers;
+
+SELECT CustomerName, CONCAT(Address,', ',PostalCode,', ',City,', ',Country) AS Address
+FROM Customers;
+
+
+CustomerName	                    Address
+Alfreds Futterkiste 	            Obere Str. 57, 12209 Berlin, Germany 
+Ana Trujillo Emparedadosy helados 	Avda. de la Constitución 2222, 05021 México D.F., Mexico 
+Antonio Moreno Taquería 	        Mataderos 2312, 05023 México D.F., Mexico 
+
+
+SELECT o.OrderID, o.OrderDate, c.CustomerName
+FROM Customers AS c, Orders AS o
+WHERE c.CustomerName='Around the Horn' AND c.CustomerID=o.CustomerID;
+
+The following SQL statement is the same as above, but without aliases:
+
+SELECT Orders.OrderID, Orders.OrderDate, Customers.CustomerName
+FROM Customers, Orders
+WHERE Customers.CustomerName='Around the Horn' AND Customers.CustomerID=Orders.CustomerID;
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      ALTER                     ++++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+If we want to change the structure of the table (like firstname is very large and we want to decrease its size, add more field to 
+table, change datatype).
+
+mysql> desc employee;
++------------+-------------+------+-----+----------+-------+
+| Field      | Type        | Null | Key | Default  | Extra |
++------------+-------------+------+-----+----------+-------+
+| id         | int(11)     | NO   | PRI | NULL     |       |
+| firstname  | varchar(20) | NO   |     | NULL     |       |
+| middlename | varchar(20) | YES  |     | NULL     |       |
+| lastname   | varchar(20) | NO   |     | NULL     |       |
+| age        | int(11)     | NO   |     | NULL     |       |
+| salary     | int(11)     | NO   |     | NULL     |       |
+| location   | varchar(20) | NO   |     | banglore |       |
++------------+-------------+------+-----+----------+-------+
+
+
+ALTER table employee ADD column jobtitle varchar(50);
+Query OK, 0 rows affected (0.35 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc employee;
++------------+-------------+------+-----+----------+-------+
+| Field      | Type        | Null | Key | Default  | Extra |
++------------+-------------+------+-----+----------+-------+
+| id         | int(11)     | NO   | PRI | NULL     |       |
+| firstname  | varchar(20) | NO   |     | NULL     |       |
+| middlename | varchar(20) | YES  |     | NULL     |       |
+| lastname   | varchar(20) | NO   |     | NULL     |       |
+| age        | int(11)     | NO   |     | NULL     |       |
+| salary     | int(11)     | NO   |     | NULL     |       |
+| location   | varchar(20) | NO   |     | banglore |       |
+| jobtitle   | varchar(50) | YES  |     | NULL     |       |
++------------+-------------+------+-----+----------+-------+
+
+
+mysql> ALTER table employee DROP column jobtitle;
+Query OK, 0 rows affected (0.19 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc employee;
++------------+-------------+------+-----+----------+-------+
+| Field      | Type        | Null | Key | Default  | Extra |
++------------+-------------+------+-----+----------+-------+
+| id         | int(11)     | NO   | PRI | NULL     |       |
+| firstname  | varchar(20) | NO   |     | NULL     |       |
+| middlename | varchar(20) | YES  |     | NULL     |       |
+| lastname   | varchar(20) | NO   |     | NULL     |       |
+| age        | int(11)     | NO   |     | NULL     |       |
+| salary     | int(11)     | NO   |     | NULL     |       |
+| location   | varchar(20) | NO   |     | banglore |       |
++------------+-------------+------+-----+----------+-------+
+
+mysql> ALTER TABLE employee MODIFY column firstname varchar(30);
+Query OK, 0 rows affected (0.28 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+mysql> desc  employee;
++------------+-------------+------+-----+----------+-------+
+| Field      | Type        | Null | Key | Default  | Extra |
++------------+-------------+------+-----+----------+-------+
+| id         | int(11)     | NO   | PRI | NULL     |       |
+| firstname  | varchar(30) | YES  |     | NULL     |       |
+| middlename | varchar(20) | YES  |     | NULL     |       |
+| lastname   | varchar(20) | NO   |     | NULL     |       |
+| age        | int(11)     | NO   |     | NULL     |       |
+| salary     | int(11)     | NO   |     | NULL     |       |
+| location   | varchar(20) | NO   |     | banglore |       |
++------------+-------------+------+-----+----------+-------+
+7 rows in set (0.00 sec)
+
+--Dropping a Primary Entry.
+
+mysql> ALTER TABLE employee DROP PRIMARY KEY;
+Query OK, 2 rows affected (0.51 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+
+mysql> ALTER TABLE employee ADD PRIMARY KEY(id);
+Query OK, 0 rows affected (0.21 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+ALTER TABLE table_name
+RENAME COLUMN old_name to new_name;
+
+---Truncate---
+TRUNCATE table employee;      --------------------\
+DELETE FROM employee;       ----------------------/ Same work, but Truncate is a DDL Command.
+
+when you do delete it removes records individually one by one(it has to do something with data itself).
+when we are using truncate,it drops table and recreate it.
+
+Truncate is more efficient as it is quick when records are more.
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++              UNION VS UNION ALL                ++++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Union is used to combine result set of two or more select statements removing Duplicates.
+- Every SELECT statement within UNION must have the same number of columns
+- The columns must also have similar data types
+- The columns in every SELECT statement must also be in the same order
+
+SELECT column_name(s) FROM table1
+UNION
+SELECT column_name(s) FROM table2;
+
+Union all is used to combine results of two selected statements including Duplicate rows.
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                   ROLLBACK                     ++++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATE table students(
+id int,
+name varchar,
+age int,
+salary int
+);
+
+insert into students(id,name,age,salary) values(1,'Ram',19,4500),(2,'Salman',8,5200),
+(3,'Sarita',21,8500),(4,'Anil',20,6300);
+
+
+select*from students;
+update students set salary=1000 where id=2;
+
+rollback; (all commands will be reverted)
+commit;   (all commands before commit will be saved permanently)
+
+Rollback and Commit works for INSERT,DELETE,UPDATE.
+
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++           SUBQUERY & NESTED QUERY              ++++++               
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This Subquery works with INSERT,DELETE and UPDATE and SELECT also.
+select columns from table1 where column=(select column from table2 where condition);
+
+If a single record exits then parent command shows result.
+select columns from  table1 where exists(select columns from table2 where condition);
+
+If a single record not exits then parent command shows result.
+select columns from  table1 where not exists(select columns from table2 where condition);
+
+                
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                   TIMESTAMP                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+I want a record in table which will tell me when this record is inserted, updated.
+
+CREATE TABLE courses_new(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months DECIMAL(3,1) NOT NULL,
+    course_fee INT NOT NULL,
+    changed_at TIMESTAMP DEFAULT NOW(),
+    PRIMARY KEY(course_id)
+);
+Query OK, 0 rows affected (0.19 sec)
+
+mysql> insert into courses_new values (1,'big data',6.5,50000);
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into courses_new values (2,'web development',3.5,20000);
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into courses_new values (3,'data science',6,40000);
+ERROR 1136 (21S01): Column count doesnt match value count at row 1
+
+
+
+insert into courses_new(course_id,course_name,course_duration_months,course_fee) values (1,'big data',6.5,50000);
+insert into courses_new(course_id,course_name,course_duration_months,course_fee) values (2,'web development',3.5,20000);
+insert into courses_new(course_id,course_name,course_duration_months,course_fee) values (3,'data science',6,40000);
+
+
++-----------+-----------------+------------------------+------------+---------------------+
+| course_id | course_name     | course_duration_months | course_fee | changed_at          |
++-----------+-----------------+------------------------+------------+---------------------+
+|         1 | big data        |                    6.5 |      50000 | 2022-09-14 11:47:52 |
+|         2 | web development |                    3.5 |      20000 | 2022-09-14 11:47:52 |
+|         3 | data science    |                    6.0 |      40000 | 2022-09-14 11:47:52 |
++-----------+-----------------+------------------------+------------+---------------------+
+
+
+mysql> update courses_new set course_fee=40000 where course_id=2;
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select* from courses_new;
++-----------+-----------------+------------------------+------------+---------------------+
+| course_id | course_name     | course_duration_months | course_fee | changed_at          |
++-----------+-----------------+------------------------+------------+---------------------+
+|         1 | big data        |                    6.5 |      50000 | 2022-09-14 11:47:52 |
+|         2 | web development |                    3.5 |      40000 | 2022-09-14 11:47:52 |
+|         3 | data science    |                    6.0 |      40000 | 2022-09-14 11:47:52 |
++-----------+-----------------+------------------------+------------+---------------------+
+3 rows in set (0.00 sec)
+
+Time stamp does not changed?
+We have to make a small defination change in table defination.
+
+
+CREATE TABLE courses_new(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months DECIMAL(3,1) NOT NULL,
+    course_fee INT NOT NULL,
+    changed_at TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
+    PRIMARY KEY(course_id)
+);
+
+OR
+
+CREATE TABLE courses_new(
+    course_id INT NOT NULL,
+    course_name varchar(30) NOT NULL,
+    course_duration_months DECIMAL(3,1) NOT NULL,
+    course_fee INT NOT NULL,
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+    PRIMARY KEY(course_id)
+);
+
+mysql> drop table courses_new;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> select*from courses_new;
++-----------+-----------------+------------------------+------------+---------------------+
+| course_id | course_name     | course_duration_months | course_fee | changed_at          |
++-----------+-----------------+------------------------+------------+---------------------+
+|         1 | big data        |                    6.5 |      50000 | 2022-09-14 12:16:18 |
+|         2 | web development |                    3.5 |      20000 | 2022-09-14 12:16:18 |
+|         3 | data science    |                    6.0 |      40000 | 2022-09-14 12:16:19 |
++-----------+-----------------+------------------------+------------+---------------------+
+3 rows in set (0.00 sec)
+
+
+mysql> update courses_new set course_fee=40000 where course_id=2;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select*from courses_new;
++-----------+-----------------+------------------------+------------+---------------------+
+| course_id | course_name     | course_duration_months | course_fee | changed_at          |
++-----------+-----------------+------------------------+------------+---------------------+
+|         1 | big data        |                    6.5 |      50000 | 2022-09-14 12:16:18 |
+|         2 | web development |                    3.5 |      40000 | 2022-09-14 12:17:44 |
+|         3 | data science    |                    6.0 |      40000 | 2022-09-14 12:16:19 |
++-----------+-----------------+------------------------+------------+---------------------+
+3 rows in set (0.00 sec)
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                 OVER CLAUSE                      ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+create table employee(
+    firstname varchar(20),
+    lastname varchar(20),
+    age int,
+    salary int, 
+    location varchar(20)
+);
+
+insert into employee values('sachin','sharma',28,10000,'bangalore');
+
+insert into employee values('shane','warne',30,20000,'bangalore');
+
+insert into employee values('rohit','sharma',32,30000,'hyderabad');
+
+insert into employee values('shikar','dhawan',32,25000,'hyderabad');
+
+insert into employee values('rahul','dravid',31,20000,'bangalore');
+
+insert into employee values('saurabh','ganguly',32,15000,pune);
+
+insert into employee values('kapil','dev',34,10000,'pune');
+
+--How many people are from each location and avg salary at each Location--
+
+select location,count(location),avg(salary) from employee group by location;
+
+Output:
+
+location	count(location)	avg(salary)
+bangalore	       3	   16666.6667
+hyderabad	       2  	   27500.0000
+pune	           2	   12500.0000
+
+What if i want something like this?
+
+Output:
+
+firstname	lastname	age	salary	location
+sachin	sharma	bangalore	       3	   16666.6667
+shane	warne	bangalore	       3	   16666.6667
+rohit	sharma	hyderabad	       2  	   27500.0000
+shikar	dhawan	hyderabad	       2  	   27500.0000
+rahul	dravid	bangalore	       3	   16666.6667
+saurabh	ganguly	pune	           2	   12500.0000
+kapil	dev	34	pune	           2	   12500.0000
+
+
+select firstname,lastname,location,count(location),avg(salary) from employee group by location;
+
+ERROR 1055 (42000) at line 26: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 
+'db_3ygdt2a3e.employee.firstname' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with
+sql_mode=only_full_group_by
+
+
+We can try it using join...
+
+
+select firstname,lastname,location,total_count,avg_salary from employee join 
+(select location,count(location),avg(salary) from employee group by location) temptable on employee.location=temptable.location;
+
+AS location column is present in both tables it will show ambiguity. 
+ERROR 1052 (23000) at line 32: Column 'location' in field list is ambiguous
+
+
+select firstname,lastname,employee.location,total_count,avg_salary from employee join 
+(select location,count(location) as total_count,avg(salary) as avg_salary from employee group by location) temptable on employee.location=temptable.location;
+
+
+firstname	lastname	location	total_count	avg_salary
+sachin	sharma	bangalore	3	16666.6667
+shane	warne	bangalore	3	16666.6667
+rohit	sharma	hyderabad	2	27500.0000
+shikar	dhawan	hyderabad	2	27500.0000
+rahul	dravid	bangalore	3	16666.6667
+saurabh	ganguly	pune	    2	12500.0000
+kapil	dev	    pune	    2	12500.0000
+
+
+---Easier way---
+Use OVER PARTITION BY to achieve this.
+
+select firstname,lastname,location,count(location) OVER(PARTITION BY location),
+avg(salary) OVER (PARTITION BY location) as average from employee;
+
+
+This is how we use over and partition by to club the non aggregated columns(firstname,lastname,location) along with 
+aggregated columns(OVER(PARTITION BY location),avg(salary) OVER (PARTITION BY location)) easliy.
+
+Row Number function
+row number cannot work without order by(no point of giving some numbering when you are not ordering it).
+
+I want highest to lowest salary and row numbers starting from 1.
+
+select firstname,lastname,salary,row_number over (order by salary desc) from employee;
+
+firstname	lastname	salary	row_number() over (order by salary desc)
+rohit	sharma	        30000	1
+shikar	dhawan	        25000	2
+shane	warne	        20000	3
+rahul	dravid	        20000	4
+saurabh	ganguly	        15000	5
+sachin	sharma	        10000	6
+kapil	dev	            10000	7
+
+
+Find 5 highest salary.
+select * from (select firstname,lastname,salary,row_number() over (order by salary desc) as rownum from employee) temptable where rownum=5;
+
+Output:
+
+firstname	lastname	salary	rownum
+saurabh	ganguly	15000	5
+
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                      CASE                        ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The CASE expression goes through conditions and returns a value when the first condition is met (like an if-then-else statement). 
+So, once a condition is true, it will stop reading and return the result. If no conditions are true, it returns the value in the 
+ELSE clause.
+
+If there is no ELSE part and no conditions are true, it returns NULL.
+
+CASE
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    WHEN conditionN THEN resultN
+    ELSE result
+END;
+
+
+select course_id,course_name,course_fee,
+CASE
+    WHEN course_duration_months>4 THEN 'masters'
+    ELSE 'diploma'
+END as course_type
+from courses;
+
++-----------+-----------------+------------+-------------+
+| course_id | course_name     | course_fee | course_type |
++-----------+-----------------+------------+-------------+
+|         1 | big data        |      50000 | masters     |
+|         2 | web development |      20000 | diploma     |
+|         3 | data science    |      40000 | masters     |
+|         4 | dev ops         |      10000 | diploma     |
++-----------+-----------------+------------+-------------+
+4 rows in set (0.00 sec)
+
+
+People working in flipkart,microsoft,walmart are working in product based and all other are working in service based;
+
+select student_id,student_fname,student_lname,student_company,
+CASE 
+WHEN student_company in ('flipkart','walmart','microsoft')THEN 'Product_based' 
+ELSE 'Service Based'
+END as Company_type
+from students;
+
+
++------------+---------------+---------------+-----------------+---------------+
+| student_id | student_fname | student_lname | student_company | Company_type  |
++------------+---------------+---------------+-----------------+---------------+
+|          2 | rohit         | sharma        | walmart         | Product_based |
+|          3 | shikhar       | dhawan        | google          | Service Based |
+|          4 | rahul         | dravid        | walmart         | Product_based |
+|          5 | kapil         | dev           | microsoft       | Product_based |
+|          6 | brain         | lara          | tcs             | Service Based |
+|          7 | carl          | hooper        | wipro           | Service Based |
+|          8 | saurabh       | ganguly       | wipro           | Service Based |
++------------+---------------+---------------+-----------------+---------------+
+7 rows in set (0.01 sec)
+
+
+There can be multiple when then statements simpler.
+
+select student_id,student_fname,student_lname,student_company,
+CASE 
+WHEN student_company in ('flipkart','walmart','microsoft')THEN 'Product_based' 
+WHEN student_company is NULL THEN 'Invalid Company'
+ELSE 'Service Based'
+END as Company_type
+from students;
+
+
+                                        ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                        ++++             SQL Performance UNION vs OR          ++++               
+                                        ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+LC reference:
+UNION can be a bit faster because each select can use its own index, while OR can use index for area and 
+full-scan for population (or vise versa).But it is not good memory wise.
+
+select username from users where company = 'bbc' or company = 'itv';
+This is equivalent to:
+select username from users where company IN ('bbc', 'itv');
+
+
+MySQL can use an index on company for this query just fine.Theres no need to do any UNION.
+The more tricky case is where you have an OR condition that involves two different columns.
+select username from users where company = 'bbc' or city = 'London';
+
+Suppose theres an index on company and a separate index on city. 
+Given that MySQL usually uses only one index per table in a given query, which index should it use?
+
+If it uses the index on company, it would still have to do a table-scan to find rows where city is London.
+If it uses the index on city, it would have to do a table-scan for rows where company is bbc.
+
+The UNION solution is for this type of case:
+
+select username from users where company = 'bbc' 
+union
+select username from users where city = 'London';
+Now each sub-query can use the index for its search, and the results of the subquery are combined by the UNION.
+
+What is a Stored Procedure?
+
+A stored procedure is a prepared SQL code that you can save, so the code can be reused over and over again.
+So if you have an SQL query that you write over and over again, save it as a stored procedure, and then just call it to execute it.
+
+CREATE PROCEDURE procedure_name
+AS
+sql_statement
+GO;
+
+
+                           ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                           ++++             RANK AND DESNSE RANK                 ++++ 
+                           ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+They are use to solve problems of Duplicates in a table.
+Order by is mandatory for them also.
+
+
+select firstname,lastname,salary ,row_number() over(order by salary desc) from employee;
+
+--note: each row will have  diff no.
+
+firstname	lastname	salary	row_number() over(order by salary desc)
+rohit	    sharma	    30000	1
+shikar	    dhawan	    25000	2
+shane	    warne	    20000	3
+rahul	    dravid	    20000	4
+saurabh	    ganguly	    15000	5
+sachin	    sharma	    10000	6
+kapil	    dev  	    10000	7
+
+
+select firstname,lastname,salary ,rank() over(order by salary desc) from employee;
+
+same rank to duplicates.(but it ommited 4)
+
+firstname	lastname	salary	rank() over(order by salary desc)
+rohit	sharma	30000	1
+shikar	dhawan	25000	2
+shane	warne	20000	3
+rahul	dravid	20000	3
+saurabh	ganguly	15000	5
+sachin	sharma	10000	6
+kapil	dev	10000	6
+
+
+select firstname,lastname,salary ,dense_rank() over(order by salary desc) from employee;
+(no ranks are skipped)
+
+firstname	lastname	salary	dense_rank() over(order by salary desc)
+rohit	sharma	30000	1
+shikar	dhawan	25000	2
+shane	warne	20000	3
+rahul	dravid	20000	3
+saurabh	ganguly	15000	4
+sachin	sharma	10000	5
+kapil	dev	10000	5
+
+
+Usage of all completely depends on requirements.
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                    EXISTS                        ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The EXISTS operator is used to test for the existence of any record in a subquery.
+The EXISTS operator returns TRUE if the subquery returns one or more records.
+
+SELECT column_name(s)
+FROM table_name
+WHERE EXISTS
+(SELECT column_name FROM table_name WHERE condition);
+
+
+SELECT SupplierName
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price = 22);
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++                 ALL & ANY                        ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                        
+The ANY and ALL operators allow you to perform a comparison between a single column value and a range of other values.
+
+The ANY operator:
+
+returns a boolean value as a result
+returns TRUE if ANY of the subquery values meet the condition
+ANY means that the condition will be true if the operation is true for any of the values in the range.
+
+
+SELECT column_name(s)
+FROM table_name
+WHERE column_name operator ANY
+  (SELECT column_name
+  FROM table_name
+  WHERE condition);
+
+The ALL operator:
+
+returns a boolean value as a result
+returns TRUE if ALL of the subquery values meet the condition
+is used with SELECT, WHERE and HAVING statements
+ALL means that the condition will be true only if the operation is true for all values in the range. 
+
+SELECT column_name(s)
+FROM table_name
+WHERE column_name operator ALL
+  (SELECT column_name
+  FROM table_name
+  WHERE condition);
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++               SELECT INTO                        ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The SELECT INTO statement copies data from one table into a new table.
+
+SELECT *
+INTO newtable [IN externaldb]
+FROM oldtable
+WHERE condition;
+
+The following SQL statement uses the IN clause to copy the table into a new table in another database:
+
+SELECT * INTO CustomersBackup2017 IN 'Backup.mdb'
+FROM Customers;
+
+
+The INSERT INTO SELECT statement copies data from one table and inserts it into another table.
+
+The INSERT INTO SELECT statement requires that the data types in source and target tables match.
+
+Note: The existing records in the target table are unaffected.
+
+INSERT INTO table2 (column1, column2, column3, ...)
+SELECT column1, column2, column3, ...
+FROM table1
+WHERE condition;
+
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                              ++++             SQL STORED PROCEURE                  ++++ 
+                                              ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+A stored procedure is a prepared SQL code that you can save, so the code can be reused over and over again.
+So if you have an SQL query that you write over and over again, save it as a stored procedure, and then just call it to execute it.
+You can also pass parameters to a stored procedure, so that the stored procedure can act based on the parameter value(s) that is passed.
+
+CREATE PROCEDURE procedure_name
+AS
+sql_statement
+GO;
+
+EXEC procedure_name;
+
+Example:
+
+CREATE PROCEDURE SelectAllCustomers
+AS
+SELECT * FROM Customers
+GO;
+
+EXEC SelectAllCustomers;
