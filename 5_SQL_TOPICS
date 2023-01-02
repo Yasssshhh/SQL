@@ -1,4 +1,6 @@
-INDEX COMMAND
+                                            ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                            ++++                 INDEX COMMAD                     ++++ 
+                                            ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 The CREATE INDEX statement is used to create indexes in tables.
 
@@ -607,6 +609,7 @@ kapil	dev	10000	5
 
 Usage of all completely depends on requirements.
 
+
                                               ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                                               ++++                    EXISTS                        ++++ 
                                               ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -623,6 +626,7 @@ WHERE EXISTS
 SELECT SupplierName
 FROM Suppliers
 WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price = 22);
+
 
                                               ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                                               ++++                 ALL & ANY                        ++++ 
